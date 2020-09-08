@@ -1,0 +1,5717 @@
+openapi: 3.0.0
+info:
+  version: v1
+  title: O3 API Documentation
+  contact:
+    name: O3 Solutions
+    email: support@o3.solutions
+paths:
+  /api/projects/apilist:
+    get:
+      tags:
+        - Projects
+      summary: Project List
+      description: This method returns a list of projects for current authenticated user.
+      operationId: Projects_ListProjects
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ViewProject"
+            text/json:
+              schema:
+                $ref: "#/components/schemas/ViewProject"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/ViewProject"
+            text/xml:
+              schema:
+                $ref: "#/components/schemas/ViewProject"
+  /login:
+    post:
+      tags:
+        - Authentication
+      summary: Login
+      description: User login and authentication.
+      operationId: Authentication_Login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginDTO"
+          text/json:
+            schema:
+              $ref: "#/components/schemas/LoginDTO"
+          application/xml:
+            schema:
+              $ref: "#/components/schemas/LoginDTO"
+          text/xml:
+            schema:
+              $ref: "#/components/schemas/LoginDTO"
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "#/components/schemas/LoginDTO"
+        description: Login Parameters
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_LoginSuccessDTO_"
+            text/json:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_LoginSuccessDTO_"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_LoginSuccessDTO_"
+            text/xml:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_LoginSuccessDTO_"
+  "/SelectProject/{projectID}":
+    post:
+      tags:
+        - Authentication
+      summary: Select a Project
+      description: Selects a project and builds the appropriate navigation tree for the user
+      operationId: Authentication_SelectProject
+      parameters:
+        - name: projectID
+          in: path
+          description: Project ID
+          required: true
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_NavTreeConfiguration_"
+            text/json:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_NavTreeConfiguration_"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_NavTreeConfiguration_"
+            text/xml:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_NavTreeConfiguration_"
+  "/api/iwps/apilist/{projectID}":
+    get:
+      tags:
+        - IWPs
+      summary: Project IWP's
+      description: Gets a list of Installation Work Packages for a given project
+      operationId: IWPs_ListIWPs
+      parameters:
+        - name: projectID
+          in: path
+          description: Project ID
+          required: true
+          schema:
+            type: integer
+            format: int32
+        - name: skip
+          in: query
+          description: The number of records to take
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: take
+          in: query
+          description: The number of records to take
+          required: false
+          schema:
+            type: integer
+            format: int32
+        - name: pageSize
+          in: query
+          description: The number of records per page
+          required: false
+          schema:
+            type: integer
+            format: int32
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_ViewInstallationWorkPackage\
+                  _"
+            text/json:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_ViewInstallationWorkPackage\
+                  _"
+            application/xml:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_ViewInstallationWorkPackage\
+                  _"
+            text/xml:
+              schema:
+                $ref: "#/components/schemas/SwaggerDataSourceResult_ViewInstallationWorkPackage\
+                  _"
+servers:
+  - url: https://dev.o3solution.com
+components:
+  securitySchemes:
+    apiKey:
+      type: apiKey
+      description: API Key Authentication
+      name: apiKey
+      in: header
+  schemas:
+    GetActionsParams:
+      type: object
+      properties:
+        mode:
+          type: string
+    O3FilterGroup:
+      type: object
+      properties:
+        IsOr:
+          type: boolean
+        Rules:
+          type: array
+          items:
+            $ref: "#/components/schemas/FilterRule"
+        Groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/FilterGroup"
+    FilterRule:
+      type: object
+      properties:
+        Field:
+          $ref: "#/components/schemas/FilterField"
+        Operator:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
+            - 13
+            - 14
+            - 15
+            - 16
+            - 17
+            - 18
+            - 19
+            - 20
+            - 21
+            - 22
+            - 23
+            - 24
+            - 25
+            - 26
+            - 27
+          type: integer
+        ValueType:
+          type: string
+        Values:
+          type: array
+          items:
+            type: string
+        IsNumeric:
+          type: boolean
+    FilterGroup:
+      type: object
+      properties:
+        IsOr:
+          type: boolean
+        Rules:
+          type: array
+          items:
+            $ref: "#/components/schemas/FilterRule"
+        Groups:
+          type: array
+          items:
+            $ref: "#/components/schemas/FilterGroup"
+    FilterField:
+      type: object
+      properties:
+        FieldName:
+          type: string
+        DisplayName:
+          type: string
+    BulkEditDTO:
+      type: object
+      properties:
+        ProjectID:
+          format: int32
+          type: integer
+        IDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+        Options:
+          type: array
+          items:
+            $ref: "#/components/schemas/BulkEditOption"
+    BulkEditOption:
+      type: object
+      properties:
+        IsSelected:
+          type: boolean
+        Value:
+          type: string
+        Field:
+          $ref: "#/components/schemas/DetailFormField"
+    DetailFormField:
+      type: object
+      properties:
+        PropertyName:
+          type: string
+        Row:
+          format: int32
+          type: integer
+        Width:
+          format: int32
+          type: integer
+        Height:
+          format: int32
+          type: integer
+        Column:
+          format: int32
+          type: integer
+        FieldDefinition:
+          $ref: "#/components/schemas/BaseDisplayAttribute"
+    BaseDisplayAttribute:
+      type: object
+      properties:
+        Label:
+          type: string
+        PropertyName:
+          type: string
+        Required:
+          type: boolean
+        FieldType:
+          type: string
+        ShowOnDataRequirements:
+          type: boolean
+        LookupBagField:
+          type: string
+        UserNameField:
+          type: string
+        ReadOnly:
+          type: boolean
+        TouchFriendly:
+          type: boolean
+        AllowCustomTime:
+          type: boolean
+        ShowTimePicker:
+          type: boolean
+        HelperText:
+          type: string
+        TypeId:
+          type: object
+          readOnly: true
+    GetApprovalsParams:
+      type: object
+      properties:
+        FilterBy:
+          type: string
+        FilterValue:
+          type: string
+        ShowComplete:
+          type: boolean
+    ApprovalDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+        StatusID:
+          format: int32
+          type: integer
+        Status:
+          type: string
+        IsEditable:
+          type: boolean
+        Notes:
+          type: string
+        AssignedToUserID:
+          format: int32
+          type: integer
+        AssignedToUser:
+          type: string
+        DateDue:
+          format: date-time
+          type: string
+        SubmittedByUserID:
+          format: int32
+          type: integer
+        SubmittedByUser:
+          type: string
+        DateSubmitted:
+          format: date-time
+          type: string
+        RejectedByUserID:
+          format: int32
+          type: integer
+        RejectedByUser:
+          type: string
+        DateRejected:
+          format: date-time
+          type: string
+        RejectionNotes:
+          type: string
+        ApprovedByUserID:
+          format: int32
+          type: integer
+        ApprovedByUser:
+          type: string
+        DateApproved:
+          format: date-time
+          type: string
+        CanSubmit:
+          type: boolean
+        CanApprove:
+          type: boolean
+        CanReject:
+          type: boolean
+        CanReopen:
+          type: boolean
+        PriorityID:
+          format: int32
+          type: integer
+        Priority:
+          type: string
+        IsUrgent:
+          type: boolean
+        ForecastDate:
+          format: date-time
+          type: string
+        CompanyID:
+          format: int32
+          type: integer
+        Company:
+          type: string
+        AssignedToRoleID:
+          format: int32
+          type: integer
+        AssignedToRole:
+          type: string
+        AssignedToUserGroupID:
+          format: int32
+          type: integer
+        AssignedToUserGroup:
+          type: string
+        FilterText:
+          type: string
+    EntityFieldListDTO:
+      type: object
+      properties:
+        TableName:
+          type: string
+        Fields:
+          type: array
+          items:
+            $ref: "#/components/schemas/BaseDisplayAttribute"
+    AddApprovalDTO:
+      type: object
+      properties:
+        EntityTypeID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        ApprovalTypeID:
+          format: int32
+          type: integer
+        ActionID:
+          format: int32
+          type: integer
+    GetApprovalTypesParams:
+      type: object
+      properties:
+        ShowInactive:
+          type: boolean
+    ApprovalTypeDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        SubmitterRoleID:
+          format: int32
+          type: integer
+        ApproverRoleID:
+          format: int32
+          type: integer
+        StatusID:
+          format: int32
+          type: integer
+        SortOrder:
+          format: int32
+          type: integer
+        AutoCreate:
+          type: boolean
+        AutoCreatedApprovalItems:
+          $ref: "#/components/schemas/AutoCreatedApprovalItems"
+        RestrictCompletionToAssignee:
+          type: boolean
+        RequireAssignmentForCompletion:
+          type: boolean
+        IsActive:
+          type: boolean
+    AutoCreatedApprovalItems:
+      type: object
+      properties:
+        Values:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutoCreatedApprovalItem"
+    AutoCreatedApprovalItem:
+      type: object
+      properties:
+        ApprovalTypeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        DefaultStatusID:
+          format: int32
+          type: integer
+        AssignToPlannerUser:
+          type: boolean
+        CompanyID:
+          format: int32
+          type: integer
+        AssignedToRoleID:
+          format: int32
+          type: integer
+        AssignedToUserID:
+          format: int32
+          type: integer
+        AssignedToUser:
+          type: string
+        AssignedToUserGroupID:
+          format: int32
+          type: integer
+        AssignedToUserGroup:
+          type: string
+        Filters:
+          $ref: "#/components/schemas/FilterGroup"
+        FilterString:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+    NewAssociationDTO:
+      type: object
+      properties:
+        EntityID:
+          format: int32
+          type: integer
+        ActionID:
+          format: int32
+          type: integer
+        AssociatedEntityID:
+          format: int32
+          type: integer
+        AssociatedActionID:
+          format: int32
+          type: integer
+        IsPredecessor:
+          type: boolean
+        IsSuccessor:
+          type: boolean
+        AssociationTypeID:
+          format: int32
+          type: integer
+    GetAttachmentsParams:
+      type: object
+      properties:
+        EntityID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        ActionID:
+          format: int32
+          type: integer
+    LoginDTO:
+      type: object
+      properties:
+        Username:
+          type: string
+        Password:
+          type: string
+        RememberMe:
+          type: boolean
+        DisplayName:
+          type: string
+        Email:
+          type: string
+        Mode:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+          type: integer
+        Recaptcha:
+          type: string
+        IsMobile:
+          type: boolean
+    LoginSuccessDTO:
+      type: object
+      properties:
+        Token:
+          type: string
+        LoggedInUser:
+          $ref: "#/components/schemas/ViewUserAccount"
+        Contexts:
+          type: array
+          items:
+            $ref: "#/components/schemas/ApplicationContextDTO"
+        UpdateProfile:
+          type: boolean
+        ResetPassword:
+          type: boolean
+        UserHash:
+          type: string
+        UserPreferences:
+          $ref: "#/components/schemas/UserPreferences"
+        DeploymentID:
+          type: string
+        RequireSpecialCharactersInPasswords:
+          type: boolean
+        EnableInactivityTimeout:
+          type: boolean
+        InactivityTimeout:
+          format: int32
+          type: integer
+        UserHasToolTimeAccess:
+          type: boolean
+        UserHasSafetyObservationsAccess:
+          type: boolean
+        HeaderMessage:
+          type: string
+        EnableBIM360DocsExport:
+          type: boolean
+        PusherAppKey:
+          type: string
+        PusherCluster:
+          type: string
+    ViewUserAccount:
+      type: object
+      properties:
+        UniqueID:
+          format: uuid
+          type: string
+          example: 00000000-0000-0000-0000-000000000000
+        Username:
+          type: string
+        DisplayName:
+          type: string
+        Email:
+          type: string
+        InternalID:
+          type: string
+        CompanyID:
+          format: int32
+          type: integer
+        CompanyName:
+          type: string
+        CompanyUniqueID:
+          format: uuid
+          type: string
+          example: 00000000-0000-0000-0000-000000000000
+        PositionID:
+          format: int32
+          type: integer
+        Position:
+          type: string
+        DepartmentID:
+          format: int32
+          type: integer
+        Department:
+          type: string
+        DisciplineID:
+          format: int32
+          type: integer
+        Discipline:
+          type: string
+        IsContractor:
+          type: boolean
+        IsSystemAdmin:
+          type: boolean
+        IsTrainingAdmin:
+          type: boolean
+        IsActive:
+          type: boolean
+        OfficePhone:
+          type: string
+        MobilePhone:
+          type: string
+        City:
+          type: string
+        State:
+          type: string
+        CountryOfResidence:
+          type: string
+        PrimaryLanguage:
+          type: string
+        EnglishWrittenProficiencyID:
+          format: int32
+          type: integer
+        EnglishWritten:
+          type: string
+        EnglishSpokenProficiencyID:
+          format: int32
+          type: integer
+        EnglishSpoken:
+          type: string
+        DateCreated:
+          format: date-time
+          type: string
+        CreatedByUserID:
+          format: int32
+          type: integer
+        CreatedByUser:
+          type: string
+        DateModified:
+          format: date-time
+          type: string
+        ModifiedByUserID:
+          format: int32
+          type: integer
+        ModifiedByUser:
+          type: string
+        IsDeleted:
+          type: boolean
+        AllowViewTrainingLog:
+          type: boolean
+        AllowAddUsersToTraining:
+          type: boolean
+        AllowCreateUsersInTraining:
+          type: boolean
+        CanViewScorecards:
+          type: boolean
+        LastLoggedIn:
+          format: date-time
+          type: string
+        SAMLSingleSignOn:
+          type: boolean
+        RequirePasswordReset:
+          type: boolean
+        LastPasswordChangeDate:
+          format: date-time
+          type: string
+        IsLocked:
+          type: boolean
+        FailedLoginAttempts:
+          format: int32
+          type: integer
+        SupervisorUserID:
+          format: int32
+          type: integer
+        SupervisorUser:
+          type: string
+        NotificationEmail:
+          type: string
+        APIKey:
+          type: string
+        Description:
+          type: string
+        DefaultPlantID:
+          format: int32
+          type: integer
+        DefaultPlant:
+          type: string
+        IsCompanyTrainingAdmin:
+          type: boolean
+        AllowViewCompanyTrainingLog:
+          type: boolean
+        AllowCreateManualTrainingLogEntries:
+          type: boolean
+        AllowDeleteManualTrainingLogEntries:
+          type: boolean
+        AllowImportTrainingLogEntries:
+          type: boolean
+        MobilePIN:
+          type: string
+        MobileSalt:
+          maxLength: 255
+          minLength: 0
+          type: string
+        KeepActive:
+          type: boolean
+        DateLastActivated:
+          format: date-time
+          type: string
+        Password:
+          type: string
+        ID:
+          format: int32
+          type: integer
+    ApplicationContextDTO:
+      type: object
+      properties:
+        Name:
+          type: string
+        RouteSegment:
+          type: string
+        Color:
+          type: string
+        ShowSeparator:
+          type: boolean
+        ShowEntitySelection:
+          type: boolean
+        RecentlyVisited:
+          type: array
+          items:
+            $ref: "#/components/schemas/SimpleListDTO"
+        StaticNavigation:
+          $ref: "#/components/schemas/NavTreeConfiguration"
+    UserPreferences:
+      type: object
+      properties:
+        RecentProjectLinks:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecentNavigationLink"
+        RecentProgramLinks:
+          type: array
+          items:
+            $ref: "#/components/schemas/RecentNavigationLink"
+        AutoAddWatcherSettings:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutoAddWatcherSetting"
+    SimpleListDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        EntityTypeID:
+          format: int32
+          type: integer
+        SortOrder:
+          format: int32
+          type: integer
+        Color:
+          type: string
+    NavTreeConfiguration:
+      type: object
+      properties:
+        SelectedEntity:
+          $ref: "#/components/schemas/SimpleListDTO"
+        NavTree:
+          type: array
+          items:
+            $ref: "#/components/schemas/NavTreeNode"
+        DashboardID:
+          format: int32
+          type: integer
+    RecentNavigationLink:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        DateLastAccessed:
+          format: date-time
+          type: string
+    AutoAddWatcherSetting:
+      type: object
+      properties:
+        Title:
+          type: string
+        EntityTypeID:
+          format: int32
+          type: integer
+        Active:
+          type: boolean
+    NavTreeNode:
+      type: object
+      properties:
+        ID:
+          type: string
+        Name:
+          type: string
+        Route:
+          type: string
+        RouteSegment:
+          type: string
+        Children:
+          type: array
+          items:
+            $ref: "#/components/schemas/NavTreeNode"
+        IsToggled:
+          type: boolean
+        IsCategory:
+          type: boolean
+        Hidden:
+          type: boolean
+    SAMLResponseDTO:
+      type: object
+      properties:
+        Response:
+          type: string
+    BestPracticeMeasurementDefinitionDTO:
+      type: object
+      properties:
+        Key:
+          type: string
+        Name:
+          type: string
+        Description:
+          type: string
+        CategoryMeasurement:
+          $ref: "#/components/schemas/BestPracticeCategoryMeasurementDefinition"
+        SubCategory:
+          type: string
+        DefaultSettings:
+          $ref: "#/components/schemas/BestPracticeSettings"
+        UOM:
+          type: string
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        ProgramID:
+          format: int32
+          type: integer
+        InitiativeID:
+          format: int32
+          type: integer
+        DocumentJson:
+          type: string
+        RequiredData:
+          type: string
+        DisplayOptions:
+          type: array
+          items:
+            format: int32
+            enum:
+              - 0
+              - 1
+              - 2
+              - 3
+              - 4
+              - 5
+              - 6
+              - 7
+            type: integer
+        DefaultWidgetName:
+          type: string
+        UserCanEdit:
+          type: boolean
+        Weight:
+          format: int32
+          type: integer
+        CategoryName:
+          type: string
+    BestPracticeCategoryMeasurementDefinition:
+      type: object
+      properties:
+        Title:
+          type: string
+          readOnly: true
+        Segments:
+          type: array
+          items:
+            format: int32
+            enum:
+              - 1
+              - 2
+              - 3
+            type: integer
+    BestPracticeSettings:
+      type: object
+      properties:
+        SettingsFields:
+          type: array
+          items:
+            $ref: "#/components/schemas/SettingsField"
+        Target:
+          format: double
+          type: number
+        ShortTermTrendWeeks:
+          format: int32
+          type: integer
+        LongTermTrendWeeks:
+          format: int32
+          type: integer
+        RangeConfiguration:
+          $ref: "#/components/schemas/RangeConfiguration"
+        RangeConfigurationType:
+          format: int32
+          enum:
+            - 0
+            - 1
+            - 2
+          type: integer
+        RangeCalculationFrequency:
+          format: int32
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+          type: integer
+        WeightType:
+          format: int32
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+          type: integer
+    SettingsField:
+      type: object
+      properties:
+        FieldName:
+          type: string
+        DisplayName:
+          type: string
+        FieldType:
+          type: string
+        HelperText:
+          type: string
+        Required:
+          type: boolean
+        EntityType:
+          type: string
+        EntityName:
+          type: string
+        EntityValue:
+          type: string
+        DisplayValue:
+          type: string
+    RangeConfiguration:
+      type: object
+      properties:
+        Ranges:
+          type: array
+          items:
+            $ref: "#/components/schemas/Range"
+    Range:
+      type: object
+      properties:
+        OverUnderScoreValue:
+          format: double
+          type: number
+        MinValue:
+          format: double
+          type: number
+        MaxValue:
+          format: double
+          type: number
+        RangeState:
+          format: int32
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+          type: integer
+    BestPracticeRolePhaseUpdateDTO:
+      type: object
+      properties:
+        RoleID:
+          format: int32
+          type: integer
+        PhaseID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        AWPRole:
+          type: string
+        ProjectPhase:
+          type: string
+        UserCanConfigure:
+          type: boolean
+        UserCanUpdateScore:
+          type: boolean
+        BestPractices:
+          type: array
+          items:
+            $ref: "#/components/schemas/BestPracticeDTO"
+    BestPracticeDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        AWPRoleID:
+          format: int32
+          type: integer
+        ProjectPhaseTypeID:
+          format: int32
+          type: integer
+        Adopt:
+          type: boolean
+        Score:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        Measurements:
+          type: array
+          items:
+            $ref: "#/components/schemas/BestPracticeMeasurementDTO"
+    BestPracticeMeasurementDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        ScoreValue:
+          format: double
+          type: number
+        ActualValue:
+          format: double
+          type: number
+        DocumentJson:
+          type: string
+        EntityID:
+          format: int32
+          type: integer
+        EntityName:
+          type: string
+        TaskID:
+          format: int32
+          type: integer
+        TaskName:
+          type: string
+        ShowRangeSettings:
+          type: boolean
+    BestPracticeTypeDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        ProjectPhaseTypeID:
+          format: int32
+          type: integer
+        ProjectPhaseType:
+          type: string
+        AWPRoleID:
+          format: int32
+          type: integer
+        Role:
+          type: string
+        IsManual:
+          type: boolean
+        UniqueKey:
+          format: uuid
+          type: string
+          example: 00000000-0000-0000-0000-000000000000
+        MeasurementTypes:
+          type: array
+          items:
+            $ref: "#/components/schemas/BestPracticeTypeMeasurementTypeDTO"
+    BestPracticeTypeMeasurementTypeDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        BestPracticeTypeID:
+          format: int32
+          type: integer
+        BestPracticeTypeName:
+          type: string
+        BestPracticeMeasurementTypeID:
+          format: int32
+          type: integer
+        BestPracticeMeasurementName:
+          type: string
+        BestPracticeMeasurementDescription:
+          type: string
+    BoardDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        OwnerID:
+          format: int32
+          type: integer
+        OwnerName:
+          type: string
+        Name:
+          type: string
+        Description:
+          type: string
+        TaskCount:
+          format: int32
+          type: integer
+        IsPublic:
+          type: boolean
+        ProjectTeamIDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+    BoardTaskDTO:
+      type: object
+      properties:
+        TaskID:
+          format: int32
+          type: integer
+        BoardID:
+          format: int32
+          type: integer
+    BoardTaskParams:
+      type: object
+      properties:
+        BoardID:
+          format: int32
+          type: integer
+        OpenFilter:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+          type: integer
+        OwnerFilter:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          type: integer
+        CompletedFilter:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+          type: integer
+        IncludeSubtasks:
+          type: boolean
+    GetEventLogsParams:
+      type: object
+      properties:
+        projectID:
+          format: int32
+          type: integer
+        entityID:
+          format: int32
+          type: integer
+        entityTypeID:
+          format: int32
+          type: integer
+        actionID:
+          format: int32
+          type: integer
+        userAccountID:
+          format: int32
+          type: integer
+        scheduleActivityID:
+          format: int32
+          type: integer
+        cwpReleaseID:
+          format: int32
+          type: integer
+        startDate:
+          format: date-time
+          type: string
+        endDate:
+          format: date-time
+          type: string
+    GetCommentsParams:
+      type: object
+      properties:
+        EntityID:
+          format: int32
+          type: integer
+        ActionID:
+          format: int32
+          type: integer
+    CommentDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        ActionID:
+          format: int32
+          type: integer
+        Text:
+          type: string
+        IsEdited:
+          type: boolean
+        CreatedByUserID:
+          format: int32
+          type: integer
+        CreatedByUser:
+          type: string
+        DateCreated:
+          format: date-time
+          type: string
+        IsEditable:
+          type: boolean
+        MentionedUsers:
+          type: array
+          items:
+            format: int32
+            type: integer
+    GetConstraintsParams:
+      type: object
+      properties:
+        ConstraintType:
+          type: string
+        FilterBy:
+          type: string
+        FilterValue:
+          type: string
+        CountdownGreaterThanOrEqual:
+          format: int32
+          type: integer
+        CountdownGreaterThan:
+          format: int32
+          type: integer
+        CountdownLessThan:
+          format: int32
+          type: integer
+        ShowComplete:
+          type: boolean
+    AddConstraintDTO:
+      type: object
+      properties:
+        EntityIDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+        ConstraintTypeID:
+          format: int32
+          type: integer
+        ConstraintName:
+          type: string
+    ConstraintDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ConstraintID:
+          type: string
+        ConstraintTypeID:
+          format: int32
+          type: integer
+        ConstraintType:
+          type: string
+        ProjectID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        EntityType:
+          type: string
+        EntityID:
+          format: int32
+          type: integer
+        EntityIDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+        EntityName:
+          type: string
+        Name:
+          type: string
+        Constraint:
+          type: string
+        Description:
+          type: string
+        StatusID:
+          format: int32
+          type: integer
+        IsComplete:
+          type: boolean
+        Status:
+          type: string
+        Notes:
+          type: string
+        IsEditable:
+          type: boolean
+        CanDelete:
+          type: boolean
+        CanOpen:
+          type: boolean
+        CanNeedsVerification:
+          type: boolean
+        CanComplete:
+          type: boolean
+        PriorityID:
+          format: int32
+          type: integer
+        Priority:
+          type: string
+        UrgencyID:
+          format: int32
+          type: integer
+        Urgency:
+          type: string
+        AssignedToRoleID:
+          format: int32
+          type: integer
+        AssignedToRole:
+          type: string
+        AssignedToUserGroupID:
+          format: int32
+          type: integer
+        AssignedToUserGroup:
+          type: string
+        AssignedToUserID:
+          format: int32
+          type: integer
+        AssignedToUser:
+          type: string
+        AssignedByUserID:
+          type: string
+        AssignedByUser:
+          type: string
+        DateAssigned:
+          format: date-time
+          type: string
+        DateDue:
+          format: date-time
+          type: string
+        ForecastDate:
+          format: date-time
+          type: string
+        CompletedByUserID:
+          format: int32
+          type: integer
+        CompletedByUser:
+          type: string
+        DateCompleted:
+          format: date-time
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+        CommentCount:
+          format: int32
+          type: integer
+        IsUrgent:
+          type: boolean
+        CompanyID:
+          format: int32
+          type: integer
+        Company:
+          type: string
+        DateCreated:
+          format: date-time
+          type: string
+        CreatedByUser:
+          type: string
+        DateModified:
+          format: date-time
+          type: string
+        ModifiedByUser:
+          type: string
+        EditorRoleIDs:
+          type: string
+        DefaultDueDays:
+          format: int32
+          type: integer
+        KeepDueDateAlignedWithPSD:
+          type: boolean
+        IsAutoCreatedConstraint:
+          type: boolean
+    GetConstraintTypesParams:
+      type: object
+      properties:
+        ShowInactive:
+          type: boolean
+    ConstraintTypeDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        Category:
+          type: string
+        WorkPackageStageID:
+          format: int32
+          type: integer
+        SortOrder:
+          format: int32
+          type: integer
+        AutoCreate:
+          type: boolean
+        HardConstraint:
+          type: boolean
+        DefaultDueDays:
+          format: int32
+          type: integer
+        VeryHighUrgencyWeeks:
+          format: int32
+          type: integer
+        HighUrgencyWeeks:
+          format: int32
+          type: integer
+        MediumUrgencyWeeks:
+          format: int32
+          type: integer
+        LowUrgencyWeeks:
+          format: int32
+          type: integer
+        AutoCreatedConstraintItems:
+          $ref: "#/components/schemas/AutoCreatedConstraintItems"
+        EditorRoleIDs:
+          type: array
+          items:
+            type: string
+        KeepDueDateAlignedWithPSD:
+          type: boolean
+        RestrictCompletionToAssignee:
+          type: boolean
+        RequireAssignmentForCompletion:
+          type: boolean
+        IsActive:
+          type: boolean
+    AutoCreatedConstraintItems:
+      type: object
+      properties:
+        Values:
+          type: array
+          items:
+            $ref: "#/components/schemas/AutoCreatedConstraintItem"
+    AutoCreatedConstraintItem:
+      type: object
+      properties:
+        ConstraintTypeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        Filters:
+          $ref: "#/components/schemas/FilterGroup"
+        DefaultStatusID:
+          format: int32
+          type: integer
+        CompanyID:
+          format: int32
+          type: integer
+        AssignedToRoleID:
+          format: int32
+          type: integer
+        AssignedToUserID:
+          format: int32
+          type: integer
+        AssignedToUser:
+          type: string
+        AssignedToUserGroupID:
+          format: int32
+          type: integer
+        AssignedToUserGroup:
+          type: string
+        AssignToPlannerUser:
+          type: boolean
+        FilterString:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+    ConstructionEquipmentDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        ConstructionEquipmentTypeID:
+          format: int32
+          type: integer
+        Quantity:
+          format: int32
+          type: integer
+        EstimatedHours:
+          format: int32
+          type: integer
+        ActualHours:
+          format: int32
+          type: integer
+        EstimatedDays:
+          format: int32
+          type: integer
+        ActualDays:
+          format: int32
+          type: integer
+        ConstructionEquipmentType:
+          type: string
+        IsEditable:
+          type: boolean
+    CoursePredecessorDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        CourseTypeID:
+          format: int32
+          type: integer
+        PredecessorCourseTypeID:
+          format: int32
+          type: integer
+    CourseEnrollDTO:
+      type: object
+      properties:
+        CourseID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+        SendNotification:
+          type: boolean
+        OverridePredecessors:
+          type: boolean
+    CourseUserUpdateDTO:
+      type: object
+      properties:
+        CourseUserID:
+          format: int32
+          type: integer
+        StatusID:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+          type: integer
+        Delete:
+          type: boolean
+        SendNotification:
+          type: boolean
+    ViewConstructionWorkPackageRelease:
+      type: object
+      properties:
+        ConstructionWorkPackageID:
+          format: int32
+          type: integer
+        CWPReleaseNumber:
+          type: string
+        CWPNumber:
+          type: string
+        AreaReleaseNumber:
+          type: string
+        QuantityReleased:
+          format: double
+          type: number
+        PlannedReleaseDate:
+          format: date-time
+          type: string
+        ForecastReleaseDate:
+          format: date-time
+          type: string
+        DateReleased:
+          format: date-time
+          type: string
+        Project:
+          type: string
+        StatusID:
+          format: int32
+          type: integer
+        CWPStatus:
+          type: string
+        CWPDescription:
+          type: string
+        CWPLongDescription:
+          type: string
+        CWPExternalLink:
+          type: string
+        CWPRevision:
+          type: string
+        CWPRevisionDate:
+          format: date-time
+          type: string
+        UnitID:
+          format: int32
+          type: integer
+        Unit:
+          type: string
+        DeliveryTeamID:
+          format: int32
+          type: integer
+        DeliveryTeam:
+          type: string
+        ConstructionWorkAreaID:
+          format: int32
+          type: integer
+        ConstructionWorkArea:
+          type: string
+        CWADescription:
+          type: string
+        AreaID:
+          format: int32
+          type: integer
+        Area:
+          type: string
+        DisciplineID:
+          format: int32
+          type: integer
+        Discipline:
+          type: string
+        PurposeID:
+          format: int32
+          type: integer
+        Purpose:
+          type: string
+        WbsID:
+          format: int32
+          type: integer
+        WBS:
+          type: string
+        ContractID:
+          format: int32
+          type: integer
+        Contract:
+          type: string
+        ContractGroup:
+          type: string
+        PlannerUserID:
+          format: int32
+          type: integer
+        PlannerUser:
+          type: string
+        EstimatedHours:
+          format: int32
+          type: integer
+        ScheduleActivityID:
+          type: string
+        PlannedIssueDate:
+          format: date-time
+          type: string
+        ActualIssueDate:
+          format: date-time
+          type: string
+        IssueDateVariance:
+          format: int32
+          type: integer
+        PlannedStartDate:
+          format: date-time
+          type: string
+        ActualStartDate:
+          format: date-time
+          type: string
+        StartDateVariance:
+          format: int32
+          type: integer
+        PlannedFinishDate:
+          format: date-time
+          type: string
+        PlannedDuration:
+          format: int32
+          type: integer
+        ActualDuration:
+          format: int32
+          type: integer
+        ActualFinishDate:
+          format: date-time
+          type: string
+        FinishDateVariance:
+          format: int32
+          type: integer
+        ActualHours:
+          format: int32
+          type: integer
+        ForecastedHours:
+          format: int32
+          type: integer
+        DateCreated:
+          format: date-time
+          type: string
+        CreatedByUserID:
+          format: int32
+          type: integer
+        CreatedByUser:
+          type: string
+        DateModified:
+          format: date-time
+          type: string
+        ModifiedByUserID:
+          format: int32
+          type: integer
+        ModifiedByUser:
+          type: string
+        IsDeleted:
+          type: boolean
+        ProjectID:
+          format: int32
+          type: integer
+        SourceDeleted:
+          type: boolean
+        KeyQuantity:
+          format: double
+          type: number
+        UnitOfMeasureID:
+          format: int32
+          type: integer
+        UOM:
+          type: string
+        ReleaseDescription:
+          type: string
+        ID:
+          format: int32
+          type: integer
+    CWPReleaseDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ConstructionWorkPackageID:
+          format: int32
+          type: integer
+        CWPNumber:
+          type: string
+        CWPReleaseNumber:
+          type: string
+        AreaReleaseNumber:
+          type: string
+        DateReleased:
+          format: date-time
+          type: string
+        QuantityReleased:
+          format: double
+          type: number
+        ProjectID:
+          format: int32
+          type: integer
+        IsEditable:
+          type: boolean
+        ContractID:
+          format: int32
+          type: integer
+        PlannedIssueDate:
+          format: date-time
+          type: string
+        ActualIssueDate:
+          format: date-time
+          type: string
+        PlannedStartDate:
+          format: date-time
+          type: string
+        ActualStartDate:
+          format: date-time
+          type: string
+        PlannedFinishDate:
+          format: date-time
+          type: string
+        ActualFinishDate:
+          format: date-time
+          type: string
+        PlannedReleaseDate:
+          format: date-time
+          type: string
+        ForecastReleaseDate:
+          format: date-time
+          type: string
+        EstimatedHours:
+          format: int32
+          type: integer
+        ForecastedHours:
+          format: int32
+          type: integer
+        ActualHours:
+          format: int32
+          type: integer
+        ReleaseDescription:
+          type: string
+        UnitID:
+          format: int32
+          type: integer
+    GetRisksParams:
+      type: object
+      properties:
+        Impact:
+          format: int32
+          type: integer
+        Probability:
+          format: int32
+          type: integer
+        WidgetID:
+          format: int32
+          type: integer
+        ShowComplete:
+          type: boolean
+    ReportOptionsDTO:
+      type: object
+      properties:
+        EntityID:
+          format: int32
+          type: integer
+        ReportTemplateID:
+          format: int32
+          type: integer
+        ExportAsPDF:
+          type: boolean
+        AttachmentIDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+        ReportDeliveryMethod:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+          type: integer
+    DashboardCollectionDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Dashboards:
+          type: array
+          items:
+            $ref: "#/components/schemas/SimpleListDTO"
+        Memberships:
+          type: array
+          items:
+            $ref: "#/components/schemas/DashboardCollectionMembershipDTO"
+    DashboardCollectionMembershipDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        DashboardCollectionID:
+          format: int32
+          type: integer
+        DashboardCollectionMemberTypeID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+        User:
+          type: string
+        Username:
+          type: string
+        ProjectTeamID:
+          format: int32
+          type: integer
+        ProjectTeam:
+          type: string
+        RoleID:
+          format: int32
+          type: integer
+        Role:
+          type: string
+    DashboardDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        DashboardTypeID:
+          format: int32
+          type: integer
+        DashboardScopeID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+        OwnerName:
+          type: string
+        Title:
+          type: string
+        IsSystemDefault:
+          type: boolean
+        IsEditable:
+          type: boolean
+        ProjectID:
+          format: int32
+          type: integer
+        PlantID:
+          format: int32
+          type: integer
+        IsProjectDefault:
+          type: boolean
+        IsPlantDefault:
+          type: boolean
+        Summary:
+          $ref: "#/components/schemas/ChartSummary"
+        Settings:
+          $ref: "#/components/schemas/DashboardSettings"
+        IsScorecard:
+          type: boolean
+        ProgramID:
+          format: int32
+          type: integer
+        ProgramName:
+          type: string
+        Segments:
+          type: array
+          items:
+            $ref: "#/components/schemas/SegmentDTO"
+        Widgets:
+          type: array
+          items:
+            $ref: "#/components/schemas/DashboardWidgetDTO"
+        CollectionIDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+        CreateFromTemplateName:
+          type: string
+        DateCreated:
+          format: date-time
+          type: string
+        CreatedByUserID:
+          format: int32
+          type: integer
+        CreatedByUser:
+          type: string
+        DateModified:
+          format: date-time
+          type: string
+        ModifiedByUserID:
+          format: int32
+          type: integer
+        ModifiedByUser:
+          type: string
+    ChartSummary:
+      type: object
+      properties:
+        Visible:
+          type: boolean
+        SummaryText:
+          type: string
+        CurrentScore:
+          format: double
+          type: number
+        CurrentStatus:
+          type: string
+        CurrentTrendPercent:
+          format: int32
+          type: integer
+        CurrentTrendIsGood:
+          type: boolean
+        CurrentTrendColor:
+          type: string
+        CurrentTrendStyle:
+          type: string
+          readOnly: true
+        LongTermTrendPercent:
+          format: int32
+          type: integer
+        LongTermTrendIsGood:
+          type: boolean
+        LongTermTrendColor:
+          type: string
+        LongTermTrendStyle:
+          type: string
+          readOnly: true
+        BestPracticeResult:
+          $ref: "#/components/schemas/BestPracticeMeasurementResult"
+    DashboardSettings:
+      type: object
+      properties:
+        HeaderColor:
+          type: string
+        DemoSettings:
+          $ref: "#/components/schemas/DemoSettings"
+        SortOrder:
+          format: int32
+          type: integer
+    SegmentDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Values:
+          type: array
+          items:
+            $ref: "#/components/schemas/SimpleListDTO"
+    DashboardWidgetDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        DashboardID:
+          format: int32
+          type: integer
+        BestPracticeMeasurementID:
+          format: int32
+          type: integer
+        Title:
+          type: string
+        ChartType:
+          type: string
+        IsUserDefinedDataSource:
+          type: boolean
+        Description:
+          type: string
+        WidgetType:
+          type: string
+        DrillDownState:
+          type: string
+        DrillDownLayoutKey:
+          type: string
+        sizeX:
+          format: int32
+          type: integer
+        sizeY:
+          format: int32
+          type: integer
+        row:
+          format: int32
+          type: integer
+        col:
+          format: int32
+          type: integer
+        ShowFilter:
+          type: boolean
+        DrillDownOptions:
+          type: array
+          items:
+            $ref: "#/components/schemas/SimpleListDTO"
+        DashboardTypeID:
+          format: int32
+          type: integer
+        SelectedProjectID:
+          format: int32
+          type: integer
+        SelectedProjectName:
+          type: string
+        BoardID:
+          format: int32
+          type: integer
+    BestPracticeMeasurementResult:
+      type: object
+      properties:
+        BestPracticeMeasurementID:
+          format: int32
+          type: integer
+        ActualValue:
+          format: double
+          type: number
+        ScoreValue:
+          format: double
+          type: number
+        CalculationStartTime:
+          format: date-time
+          type: string
+        CalculationEndTime:
+          format: date-time
+          type: string
+        ShortTermTrendResult:
+          format: double
+          type: number
+        ShortTermTrendType:
+          format: int32
+          enum:
+            - 0
+            - 1
+            - 2
+          type: integer
+        LongTermTrendResult:
+          format: double
+          type: number
+        LongTermTrendType:
+          format: int32
+          enum:
+            - 0
+            - 1
+            - 2
+          type: integer
+        DateDeleted:
+          format: date-time
+          type: string
+        DeletedByUserID:
+          format: int32
+          type: integer
+        IsDeleted:
+          type: boolean
+        DateCreated:
+          format: date-time
+          type: string
+        CreatedByUserID:
+          format: int32
+          type: integer
+        DateModified:
+          format: date-time
+          type: string
+        ModifiedByUserID:
+          format: int32
+          type: integer
+        ID:
+          format: int32
+          type: integer
+    DemoSettings:
+      type: object
+      properties:
+        IsDemoDeployment:
+          type: boolean
+        DemoSummary:
+          $ref: "#/components/schemas/ChartSummary"
+    DashboardListDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        DashboardTypeID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+        OwnerName:
+          type: string
+        Title:
+          type: string
+        IsSystemDefault:
+          type: boolean
+        IsEditable:
+          type: boolean
+        DashboardScope:
+          type: string
+    ShareDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        ShareTypeID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        Project:
+          type: string
+        RoleID:
+          format: int32
+          type: integer
+        Role:
+          type: string
+        UserID:
+          format: int32
+          type: integer
+        Username:
+          type: string
+        UserDisplayName:
+          type: string
+        IsEditable:
+          type: boolean
+        DashboardShareType:
+          format: int32
+          enum:
+            - 1
+            - 2
+          type: integer
+    GetWidgetDataDTO:
+      type: object
+      properties:
+        value:
+          type: object
+        FilterRules:
+          $ref: "#/components/schemas/FilterGroup"
+    DashboardWidgetConfigurationDTO:
+      type: object
+      properties:
+        Widget:
+          $ref: "#/components/schemas/DashboardWidgetDTO"
+        FilterRules:
+          $ref: "#/components/schemas/FilterGroup"
+        SettingsJson:
+          type: string
+        SettingsFields:
+          type: array
+          items:
+            $ref: "#/components/schemas/SettingsField"
+        DurationOptions:
+          type: array
+          items:
+            $ref: "#/components/schemas/FilterField"
+        BestPracticeMeasurement:
+          $ref: "#/components/schemas/BestPracticeMeasurementDefinitionDTO"
+        WidgetTypeDisplayName:
+          type: string
+        IsGlobalDashboard:
+          type: boolean
+        ProjectsList:
+          type: array
+          items:
+            $ref: "#/components/schemas/SimpleListDTO"
+        DataSourcesList:
+          type: array
+          items:
+            $ref: "#/components/schemas/SimpleListStringDTO"
+    SimpleListStringDTO:
+      type: object
+      properties:
+        ID:
+          type: string
+        Name:
+          type: string
+    DashboardWidgetLayoutDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        row:
+          format: int32
+          type: integer
+        col:
+          format: int32
+          type: integer
+        sizeX:
+          format: int32
+          type: integer
+        sizeY:
+          format: int32
+          type: integer
+    DataFormattingRuleRecordDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        DataStreamName:
+          type: string
+        FieldName:
+          type: string
+        Rules:
+          type: string
+        WidgetType:
+          type: string
+    DelayDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        DelayCode:
+          type: string
+        Name:
+          type: string
+        Description:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+        StatusID:
+          format: int32
+          type: integer
+        Status:
+          type: string
+        IsEditable:
+          type: boolean
+        Notes:
+          type: string
+        DateDue:
+          format: date-time
+          type: string
+        AssignedToUserID:
+          format: int32
+          type: integer
+        AssignedToUser:
+          type: string
+        ConfirmedByUserID:
+          format: int32
+          type: integer
+        ConfirmedByUser:
+          type: string
+        DateConfirmed:
+          format: date-time
+          type: string
+        InvalidatedByUserID:
+          format: int32
+          type: integer
+        InvalidatedByUser:
+          type: string
+        DateInvalidated:
+          format: date-time
+          type: string
+        ResolvedByUserID:
+          format: int32
+          type: integer
+        ResolvedByUser:
+          type: string
+        DateResolved:
+          format: date-time
+          type: string
+        ResolutionNotes:
+          type: string
+        CanConfirm:
+          type: boolean
+        CanInvalidate:
+          type: boolean
+        CanResolve:
+          type: boolean
+        CanReopen:
+          type: boolean
+        PriorityID:
+          format: int32
+          type: integer
+        Priority:
+          type: string
+        IsUrgent:
+          type: boolean
+        ForecastDate:
+          format: date-time
+          type: string
+        CompanyID:
+          format: int32
+          type: integer
+        Company:
+          type: string
+        AssignedToRoleID:
+          format: int32
+          type: integer
+        AssignedToRole:
+          type: string
+        AssignedToUserGroupID:
+          format: int32
+          type: integer
+        AssignedToUserGroup:
+          type: string
+        HoursLost:
+          format: int32
+          type: integer
+    AddDelayDTO:
+      type: object
+      properties:
+        EntityTypeID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        DelayTypeID:
+          format: int32
+          type: integer
+    AddDeliverableDTO:
+      type: object
+      properties:
+        EntityIDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+        DeliverableTypeID:
+          format: int32
+          type: integer
+        DeliverableName:
+          type: string
+    GetDeliverablesParams:
+      type: object
+      properties:
+        DeliverableType:
+          type: string
+        FilterBy:
+          type: string
+        FilterValue:
+          type: string
+        ShowComplete:
+          type: boolean
+    DeliverableDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Deliverable:
+          type: string
+        Name:
+          type: string
+        EntityID:
+          format: int32
+          type: integer
+        EntityIDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        EntityType:
+          type: string
+        ProjectID:
+          format: int32
+          type: integer
+        Project:
+          type: string
+        EntityContractID:
+          format: int32
+          type: integer
+        EntityName:
+          type: string
+        DeliverableID:
+          type: string
+        DeliverableTypeID:
+          format: int32
+          type: integer
+        DeliverableType:
+          type: string
+        LongName:
+          type: string
+        Description:
+          type: string
+        Countdown:
+          format: int32
+          type: integer
+        StatusID:
+          format: int32
+          type: integer
+        Status:
+          type: string
+        StatusColor:
+          type: string
+        Notes:
+          type: string
+        PriorityID:
+          format: int32
+          type: integer
+        Priority:
+          type: string
+        CompanyID:
+          format: int32
+          type: integer
+        Company:
+          type: string
+        AssignedToRoleID:
+          format: int32
+          type: integer
+        AssignedToRole:
+          type: string
+        AssignedToUserGroupID:
+          format: int32
+          type: integer
+        AssignedToUserGroup:
+          type: string
+        AssignedToUserID:
+          format: int32
+          type: integer
+        AssignedToUser:
+          type: string
+        AssignedByUserID:
+          format: int32
+          type: integer
+        AssignedByUser:
+          type: string
+        DateAssigned:
+          format: date-time
+          type: string
+        CompletedByUserID:
+          format: int32
+          type: integer
+        CompletedByUser:
+          type: string
+        DateCompleted:
+          format: date-time
+          type: string
+        IsComplete:
+          type: boolean
+        DateDue:
+          format: date-time
+          type: string
+        ForecastDate:
+          format: date-time
+          type: string
+        CommentCount:
+          format: int32
+          type: integer
+        DateCreated:
+          format: date-time
+          type: string
+        CreatedByUserID:
+          format: int32
+          type: integer
+        CreatedByUser:
+          type: string
+        DateModified:
+          format: date-time
+          type: string
+        ModifiedByUserID:
+          format: int32
+          type: integer
+        ModifiedByUser:
+          type: string
+        IsDeleted:
+          type: boolean
+        DateDueDateAssigned:
+          format: date-time
+          type: string
+        DaysToDueDate:
+          format: int32
+          type: integer
+        UrgencyID:
+          format: int32
+          type: integer
+        LastCommentID:
+          format: int32
+          type: integer
+        LastComment:
+          type: string
+        LastCommentDate:
+          format: date-time
+          type: string
+        LastCommentUser:
+          type: string
+        Urgency:
+          type: string
+        ParentActionID:
+          format: int32
+          type: integer
+        ParentAction:
+          type: string
+        IsEditable:
+          type: boolean
+        CanDelete:
+          type: boolean
+        CanOpen:
+          type: boolean
+        CanInProgress:
+          type: boolean
+        CanOnHold:
+          type: boolean
+        CanComplete:
+          type: boolean
+        EstimatedHours:
+          format: int32
+          type: integer
+        ActualHours:
+          format: int32
+          type: integer
+        ExternalLink:
+          maxLength: 1000
+          minLength: 0
+          type: string
+    DetailFormConfigurationDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
+            - 13
+            - 14
+            - 15
+            - 16
+            - 17
+            - 19
+            - 20
+            - 21
+            - 22
+            - 23
+            - 24
+            - 25
+            - 26
+            - 27
+            - 28
+            - 29
+            - 30
+            - 31
+            - 32
+            - 33
+            - 34
+            - 35
+            - 36
+            - 37
+            - 38
+            - 39
+            - 40
+            - 41
+            - 42
+            - 43
+          type: integer
+        Name:
+          type: string
+        ConfigurationDataJSON:
+          type: string
+        IsDefault:
+          type: boolean
+        FormTypeID:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+          type: integer
+    AddDevelopmentStepDTO:
+      type: object
+      properties:
+        EntityTypeID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        DevelopmentStepTypeID:
+          format: int32
+          type: integer
+    DrawingDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        StatusID:
+          format: int32
+          type: integer
+        DrawingTypeID:
+          format: int32
+          type: integer
+        CompanyID:
+          format: int32
+          type: integer
+    EnterpriseGoalCreateParams:
+      type: object
+      properties:
+        Name:
+          type: string
+        Description:
+          type: string
+    EnterpriseGoalDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        CategoryID:
+          format: int32
+          type: integer
+        FocusID:
+          format: int32
+          type: integer
+        StatusID:
+          format: int32
+          type: integer
+        PlannedStartDate:
+          format: date-time
+          type: string
+        PlannedFinishDate:
+          format: date-time
+          type: string
+        ActualStartDate:
+          format: date-time
+          type: string
+        ActualFinishDate:
+          format: date-time
+          type: string
+        Progress:
+          format: int32
+          type: integer
+    EnterpriseUserCreateParams:
+      type: object
+      properties:
+        enterpriseID:
+          format: int32
+          type: integer
+        userID:
+          format: int32
+          type: integer
+    ProjectUserDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        ProjectName:
+          type: string
+        UserID:
+          format: int32
+          type: integer
+        Username:
+          type: string
+        UserDisplayName:
+          type: string
+        IsProjectAdmin:
+          type: boolean
+        Roles:
+          type: array
+          items:
+            format: int32
+            type: integer
+        ProjectTeams:
+          type: array
+          items:
+            format: int32
+            type: integer
+    EnterpriseUserDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+        Username:
+          type: string
+        UserDisplayName:
+          type: string
+        IsEnterpriseAdmin:
+          type: boolean
+    EntityStatusDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        Project:
+          type: string
+        Name:
+          type: string
+        EntityTypeID:
+          format: int32
+          type: integer
+        EntityType:
+          type: string
+        StateID:
+          format: int32
+          type: integer
+        State:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+        Color:
+          type: string
+        RequireFullyApproved:
+          type: boolean
+        RequireFullyConstraintFree:
+          type: boolean
+        RequireFullyDeveloped:
+          type: boolean
+        RequireFullyDocumented:
+          type: boolean
+        RequireAdminToEdit:
+          type: boolean
+        AutoCreatedApprovalItems:
+          $ref: "#/components/schemas/AutoCreatedApprovalItems"
+        AutoCreatedConstraintItems:
+          $ref: "#/components/schemas/AutoCreatedConstraintItems"
+        EntityStatusTransitions:
+          type: array
+          items:
+            $ref: "#/components/schemas/EntityStatusTransitionDTO"
+    EntityStatusTransitionDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        FromStatusID:
+          format: int32
+          type: integer
+        ToStatusID:
+          format: int32
+          type: integer
+        SortOrder:
+          format: int32
+          type: integer
+        IsAutomatic:
+          type: boolean
+    GridExportScheduleDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        GridLayoutID:
+          format: int32
+          type: integer
+        Subject:
+          type: string
+        Recurrence:
+          type: string
+        ProjectID:
+          format: int32
+          type: integer
+        ProgramID:
+          format: int32
+          type: integer
+        Users:
+          type: array
+          items:
+            $ref: "#/components/schemas/GridExportScheduleUserDTO"
+        GridLayoutDTO:
+          $ref: "#/components/schemas/GridLayoutDTO"
+        CreatedByUserID:
+          format: int32
+          type: integer
+    GridExportScheduleUserDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        GridExportScheduleID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+        DisplayName:
+          type: string
+        Email:
+          type: string
+    GridLayoutDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+        OwnerName:
+          type: string
+        LayoutKey:
+          type: string
+        Name:
+          type: string
+        Layout:
+          type: string
+        IsSystemDefault:
+          type: boolean
+        IsEditable:
+          type: boolean
+        ClassName:
+          type: string
+        ExportParameters:
+          type: string
+    InitiativeEnterpriseGoalDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        InitiativeGoalID:
+          format: int32
+          type: integer
+        EnterpriseGoalID:
+          format: int32
+          type: integer
+    InitiativeGoalCreateParams:
+      type: object
+      properties:
+        InitiativeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+    InitiativeGoalDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        InitiativeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        CategoryID:
+          format: int32
+          type: integer
+        FocusID:
+          format: int32
+          type: integer
+        StatusID:
+          format: int32
+          type: integer
+        PlannedStartDate:
+          format: date-time
+          type: string
+        PlannedFinishDate:
+          format: date-time
+          type: string
+        ActualStartDate:
+          format: date-time
+          type: string
+        ActualFinishDate:
+          format: date-time
+          type: string
+        Progress:
+          format: int32
+          type: integer
+    InitiativeUserCreateParams:
+      type: object
+      properties:
+        InitiativeID:
+          format: int32
+          type: integer
+        userID:
+          format: int32
+          type: integer
+    InitiativeUserDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        InitiativeID:
+          format: int32
+          type: integer
+        InitiativeName:
+          type: string
+        UserID:
+          format: int32
+          type: integer
+        ProjectName:
+          type: string
+        Username:
+          type: string
+        UserDisplayName:
+          type: string
+        IsInitiativeAdmin:
+          type: boolean
+    ViewInstallationWorkPackage:
+      type: object
+      properties:
+        EntityTypeID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        Project:
+          type: string
+        ModelShotURL:
+          type: string
+        ForgeModelShotState:
+          type: string
+        Name:
+          type: string
+        StatusID:
+          format: int32
+          type: integer
+        StatusDate:
+          format: date-time
+          type: string
+        LastPackagedComponentDate:
+          format: date-time
+          type: string
+        IWPStatus:
+          type: string
+        Description:
+          type: string
+        LongDescription:
+          type: string
+        SignificantRequirements:
+          type: string
+        ScopeExclusions:
+          type: string
+        ExternalLink:
+          type: string
+        Revision:
+          type: string
+        ConstructionWorkPackageID:
+          format: int32
+          type: integer
+        CWP:
+          type: string
+        CWPDescription:
+          type: string
+        UnitID:
+          format: int32
+          type: integer
+        Unit:
+          type: string
+        DeliveryTeamID:
+          format: int32
+          type: integer
+        DeliveryTeam:
+          type: string
+        ConstructionWorkAreaID:
+          format: int32
+          type: integer
+        ConstructionWorkArea:
+          type: string
+        AreaID:
+          format: int32
+          type: integer
+        Area:
+          type: string
+        DisciplineID:
+          format: int32
+          type: integer
+        Discipline:
+          type: string
+        PurposeID:
+          format: int32
+          type: integer
+        Purpose:
+          type: string
+        WbsID:
+          format: int32
+          type: integer
+        WBS:
+          type: string
+        ContractID:
+          format: int32
+          type: integer
+        Contract:
+          type: string
+        ContractGroup:
+          type: string
+        PlannerUserID:
+          format: int32
+          type: integer
+        PlannerUser:
+          type: string
+        SubCWP:
+          type: string
+        IWPFilename:
+          type: string
+        KeyQuantity:
+          format: double
+          type: number
+        UnitOfMeasureID:
+          format: int32
+          type: integer
+        UOM:
+          type: string
+        PlannedReadyForReviewDate:
+          format: date-time
+          type: string
+        ReadyForReviewDate:
+          format: date-time
+          type: string
+        DraftReviewDate:
+          format: date-time
+          type: string
+        PlannedApprovedDate:
+          format: date-time
+          type: string
+        ApprovedDate:
+          format: date-time
+          type: string
+        PreparedFor:
+          type: string
+        DrawingCount:
+          format: int32
+          type: integer
+        BudgetedHours:
+          format: int32
+          type: integer
+        EstimatedHours:
+          format: int32
+          type: integer
+        IWPSequenceNumber:
+          format: int32
+          type: integer
+        ScheduleActivityID:
+          type: string
+        TaskCode:
+          type: string
+        CWPScheduleActivityID:
+          type: string
+        PlannedIssueDate:
+          format: date-time
+          type: string
+        ActualIssueDate:
+          format: date-time
+          type: string
+        IssueDateVariance:
+          format: int32
+          type: integer
+        PlannedStartDate:
+          format: date-time
+          type: string
+        PlannedStartYear:
+          type: string
+        PlannedStartMonth:
+          type: string
+        PlannedStartWeekOfYear:
+          type: string
+        PlannedStartDayOfYear:
+          type: string
+        ActualStartDate:
+          format: date-time
+          type: string
+        BaselineStartDate:
+          format: date-time
+          type: string
+        BaselineFinishDate:
+          format: date-time
+          type: string
+        ForecastStartDate:
+          format: date-time
+          type: string
+        ForecastFinishDate:
+          format: date-time
+          type: string
+        ActualStartYear:
+          type: string
+        ActualStartMonth:
+          type: string
+        ActualStartWeekOfYear:
+          type: string
+        ActualStartDayOfYear:
+          type: string
+        StartDateVariance:
+          format: int32
+          type: integer
+        PlannedFinishDate:
+          format: date-time
+          type: string
+        CWPPlannedStartDate:
+          format: date-time
+          type: string
+        CWPPlannedFinishDate:
+          format: date-time
+          type: string
+        ActualFinishDate:
+          format: date-time
+          type: string
+        ActualFinishYear:
+          type: string
+        ActualFinishMonth:
+          type: string
+        ActualFinishWeekOfYear:
+          type: string
+        ActualFinishDayOfYear:
+          type: string
+        FinishDateVariance:
+          format: int32
+          type: integer
+        AssemblyStartDate:
+          format: date-time
+          type: string
+        AssemblyFinishDate:
+          format: date-time
+          type: string
+        PlannedDuration:
+          format: int32
+          type: integer
+        ActualDuration:
+          format: int32
+          type: integer
+        ReleasedToUserID:
+          format: int32
+          type: integer
+        ReleasedToUser:
+          type: string
+        DateReleased:
+          format: date-time
+          type: string
+        DateDelivered:
+          format: date-time
+          type: string
+        EarnedHours:
+          format: int32
+          type: integer
+        ActualHours:
+          format: int32
+          type: integer
+        ForecastedHours:
+          format: int32
+          type: integer
+        ProductivityFactor:
+          format: double
+          type: number
+        PercentComplete:
+          format: int32
+          type: integer
+        ConstraintRollupStatusID:
+          format: int32
+          type: integer
+        ConstraintRollupStatus:
+          type: string
+        ConstraintRollupStatusColor:
+          type: string
+        PercentDocumented:
+          format: int32
+          type: integer
+        PercentDocumentedInclusive:
+          format: int32
+          type: integer
+        OpenConstraintCount:
+          format: int32
+          type: integer
+        OverdueConstraintCount:
+          format: int32
+          type: integer
+        TotalConstraintCount:
+          format: int32
+          type: integer
+        ClosedConstraintCount:
+          format: int32
+          type: integer
+        PercentConstraintFree:
+          format: int32
+          type: integer
+        PercentDelayFree:
+          format: int32
+          type: integer
+        PercentApproved:
+          format: int32
+          type: integer
+        PercentDeveloped:
+          format: int32
+          type: integer
+        SourceID:
+          format: int32
+          type: integer
+        Source:
+          type: string
+        SourceImportID:
+          format: int32
+          type: integer
+        SourceDateCreated:
+          format: date-time
+          type: string
+        SourceDeleted:
+          type: boolean
+        DateCreated:
+          format: date-time
+          type: string
+        CreatedByUserID:
+          format: int32
+          type: integer
+        CreatedByUser:
+          type: string
+        DateModified:
+          format: date-time
+          type: string
+        ModifiedByUserID:
+          format: int32
+          type: integer
+        ModifiedByUser:
+          type: string
+        IsDeleted:
+          type: boolean
+        DateConstraintFree:
+          format: date-time
+          type: string
+        DateFirstConstraintCompleted:
+          format: date-time
+          type: string
+        DateFirstConstraintCreated:
+          format: date-time
+          type: string
+        DataCompletenessStatus:
+          type: string
+        DateDataComplete:
+          format: date-time
+          type: string
+        DateCloseoutDataComplete:
+          format: date-time
+          type: string
+        CrewSize:
+          format: int32
+          type: integer
+        WorkConditionID:
+          format: int32
+          type: integer
+        WorkCondition:
+          type: string
+        OverviewModelShotAttachmentID:
+          format: int32
+          type: integer
+        RevisionDate:
+          format: date-time
+          type: string
+        PlannedCloseoutDate:
+          format: date-time
+          type: string
+        ActualCloseoutDate:
+          format: date-time
+          type: string
+        PlannedDevelopmentStartDate:
+          format: date-time
+          type: string
+        ActualDevelopmentStartDate:
+          format: date-time
+          type: string
+        TradeCoordinationNotes:
+          type: string
+        PlantOperationsNotes:
+          type: string
+        SpecialtyContractorNotes:
+          type: string
+        QualityNotes:
+          type: string
+        SafetyNotes:
+          type: string
+        LessonsLearnedNotes:
+          type: string
+        InterfacesNotes:
+          type: string
+        SpecialNotes:
+          type: string
+        PlannedStartWeek:
+          format: date-time
+          type: string
+        AssemblyStartWeek:
+          format: date-time
+          type: string
+        DisciplineDescription:
+          type: string
+        PlannerUserCompany:
+          type: string
+        AreaCode:
+          type: string
+        ToolNotes:
+          type: string
+        ConstructionEquipmentNotes:
+          type: string
+        CriticalPath:
+          type: boolean
+        CriticalPathCategoryID:
+          format: int32
+          type: integer
+        CriticalPathCategory:
+          type: string
+        CalendarStartDate:
+          format: date-time
+          type: string
+        CalendarEndDate:
+          format: date-time
+          type: string
+        IWPStatusColor:
+          type: string
+        PlannedApprovedForConstructionDate:
+          format: date-time
+          type: string
+        DateApprovedForConstruction:
+          format: date-time
+          type: string
+        FCCNotes:
+          type: string
+        TurnoverSystemID:
+          format: int32
+          type: integer
+        TurnoverSystem:
+          type: string
+        TurnoverSubsystemID:
+          format: int32
+          type: integer
+        TurnoverSubsystem:
+          type: string
+        ForemanUserID:
+          format: int32
+          type: integer
+        Foreman:
+          type: string
+        Foreman2UserID:
+          format: int32
+          type: integer
+        Foreman2:
+          type: string
+        Foreman3UserID:
+          format: int32
+          type: integer
+        Foreman3:
+          type: string
+        AlternateForemanUserID:
+          format: int32
+          type: integer
+        AlternateForeman:
+          type: string
+        GeneralForemanUserID:
+          format: int32
+          type: integer
+        GeneralForeman:
+          type: string
+        SuperintendentUserID:
+          format: int32
+          type: integer
+        Superintendent:
+          type: string
+        TestSystemID:
+          format: int32
+          type: integer
+        TestSystem:
+          type: string
+        TestSubsystemID:
+          format: int32
+          type: integer
+        TestSubsystem:
+          type: string
+        AttachmentCount:
+          format: int32
+          type: integer
+        PermitIssuerID:
+          format: int32
+          type: integer
+        PermitIssuer:
+          type: string
+        CompanySupervisorID:
+          format: int32
+          type: integer
+        CompanySupervisor:
+          type: string
+        ContractorSupervisorID:
+          format: int32
+          type: integer
+        ContractorSupervisor:
+          type: string
+        UnitCategory:
+          type: string
+        Labels:
+          type: string
+        ExternalLinkVerified:
+          type: boolean
+        ExternalLinkVerifiedByUserID:
+          format: int32
+          type: integer
+        ExternalLinkVerifiedByUser:
+          type: string
+        ExternalLinkVerifiedDate:
+          format: date-time
+          type: string
+        LabelIDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+        InvalidModelData:
+          type: boolean
+        ID:
+          format: int32
+          type: integer
+    IwpBarcodeUpdateRequest:
+      type: object
+      properties:
+        Barcode:
+          type: string
+        ProjectID:
+          format: int32
+          type: integer
+        StatusID:
+          format: int32
+          type: integer
+    LookupDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+        Color:
+          type: string
+        AllowDelete:
+          type: boolean
+        IsDeleted:
+          type: boolean
+        ProjectID:
+          format: int32
+          type: integer
+    ForgeModelShotStateDTO:
+      type: object
+      properties:
+        State:
+          type: string
+    NotificationSubscriptionDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ShowFilter:
+          type: boolean
+        Active:
+          type: boolean
+        Title:
+          type: string
+        Description:
+          type: string
+        UserID:
+          format: int32
+          type: integer
+        NotificationType:
+          type: string
+    PlantAdminUserDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Username:
+          type: string
+        DisplayName:
+          type: string
+        Email:
+          type: string
+        NotificationEmail:
+          type: string
+        InternalID:
+          type: string
+        CompanyID:
+          format: int32
+          type: integer
+        CompanyName:
+          type: string
+        DepartmentID:
+          format: int32
+          type: integer
+        Department:
+          type: string
+        PositionID:
+          format: int32
+          type: integer
+        Position:
+          type: string
+        LastLoggedIn:
+          format: date-time
+          type: string
+        DateCreated:
+          format: date-time
+          type: string
+        DateModified:
+          format: date-time
+          type: string
+    PlantCompanyCreateParams:
+      type: object
+      properties:
+        plantID:
+          format: int32
+          type: integer
+        companyID:
+          format: int32
+          type: integer
+    PlantCompanyDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        PlantID:
+          format: int32
+          type: integer
+        CompanyID:
+          format: int32
+          type: integer
+    PlantDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        PlantCode:
+          type: string
+        Name:
+          type: string
+        Description:
+          type: string
+        PlantAssets:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlantAssetDTO"
+        PlantTypeID:
+          format: int32
+          type: integer
+        Onshore:
+          type: boolean
+        Country:
+          type: string
+    PlantAssetDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        PlantID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+    PlantUserCreateParams:
+      type: object
+      properties:
+        plantID:
+          format: int32
+          type: integer
+        userID:
+          format: int32
+          type: integer
+    PlantUserDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        PlantID:
+          format: int32
+          type: integer
+        PlantName:
+          type: string
+        UserID:
+          format: int32
+          type: integer
+        Username:
+          type: string
+        UserDisplayName:
+          type: string
+        Roles:
+          type: array
+          items:
+            format: int32
+            type: integer
+        IsPlantAdmin:
+          type: boolean
+        IsProjectAdmin:
+          type: boolean
+        CanDeleteProjects:
+          type: boolean
+        PlantPermissionsJson:
+          type: string
+        PlantPermissions:
+          $ref: "#/components/schemas/PlantPermissions"
+    PlantPermissions:
+      type: object
+      properties:
+        IsPlantAdmin:
+          type: boolean
+        UpdateDetails:
+          type: boolean
+        AssignProjectRoles:
+          type: boolean
+        ImportsView:
+          type: boolean
+        ProjectsAll:
+          type: boolean
+        ProjectsView:
+          type: boolean
+        ProjectsCreate:
+          type: boolean
+        ProjectsUpdate:
+          type: boolean
+        ProjectsDelete:
+          type: boolean
+        ProjectsImport:
+          type: boolean
+        UsersAll:
+          type: boolean
+        UsersView:
+          type: boolean
+        UsersCreate:
+          type: boolean
+        UsersUpdate:
+          type: boolean
+        UsersDelete:
+          type: boolean
+        UsersLoginAssistance:
+          type: boolean
+        RolesAll:
+          type: boolean
+        RolesView:
+          type: boolean
+        RolesCreate:
+          type: boolean
+        RolesUpdate:
+          type: boolean
+        RolesDelete:
+          type: boolean
+        CompaniesAll:
+          type: boolean
+        CompaniesView:
+          type: boolean
+        CompaniesCreate:
+          type: boolean
+        CompaniesUpdate:
+          type: boolean
+        CompaniesDelete:
+          type: boolean
+        SystemLookupsAll:
+          type: boolean
+        SystemLookupsView:
+          type: boolean
+        SystemLookupsCreate:
+          type: boolean
+        SystemLookupsUpdate:
+          type: boolean
+        SystemLookupsDelete:
+          type: boolean
+        UnitsAll:
+          type: boolean
+        UnitsView:
+          type: boolean
+        UnitsCreate:
+          type: boolean
+        UnitsUpdate:
+          type: boolean
+        UnitsDelete:
+          type: boolean
+    ProgramEngagementCreateParams:
+      type: object
+      properties:
+        programID:
+          format: int32
+          type: integer
+        userID:
+          format: int32
+          type: integer
+    ProgramEngagementDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+        ProgramID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        ReportsToUserID:
+          format: int32
+          type: integer
+        TeamLeaderUserID:
+          format: int32
+          type: integer
+        DepartmentID:
+          format: int32
+          type: integer
+        DisciplineID:
+          format: int32
+          type: integer
+        Project:
+          type: string
+        Program:
+          type: string
+        Name:
+          type: string
+        Notes:
+          type: string
+        CurrentEngagementLevel:
+          format: int32
+          type: integer
+        GoalEngagementLevel:
+          format: int32
+          type: integer
+        AwareTargetDate:
+          format: date-time
+          type: string
+        AwareActualDate:
+          format: date-time
+          type: string
+        EngagedTargetDate:
+          format: date-time
+          type: string
+        EngagedActualDate:
+          format: date-time
+          type: string
+        ChampionTargetDate:
+          format: date-time
+          type: string
+        ChampionActualDate:
+          format: date-time
+          type: string
+        NextTargetDate:
+          format: date-time
+          type: string
+    ProgramInitiativeGoalDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProgramGoalID:
+          format: int32
+          type: integer
+        InitiativeGoalID:
+          format: int32
+          type: integer
+    ProgramProjectDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProgramID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+    ProgramUserCreateParams:
+      type: object
+      properties:
+        programID:
+          format: int32
+          type: integer
+        userID:
+          format: int32
+          type: integer
+    ProgramUserDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProgramID:
+          format: int32
+          type: integer
+        ProgramName:
+          type: string
+        UserID:
+          format: int32
+          type: integer
+        ProjectName:
+          type: string
+        Username:
+          type: string
+        UserDisplayName:
+          type: string
+        IsProgramAdmin:
+          type: boolean
+    ProjectGoalCreateParams:
+      type: object
+      properties:
+        projectID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+    ProjectGoalDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        CategoryID:
+          format: int32
+          type: integer
+        FocusID:
+          format: int32
+          type: integer
+        StatusID:
+          format: int32
+          type: integer
+        PlannedStartDate:
+          format: date-time
+          type: string
+        PlannedFinishDate:
+          format: date-time
+          type: string
+        ActualStartDate:
+          format: date-time
+          type: string
+        ActualFinishDate:
+          format: date-time
+          type: string
+        Progress:
+          format: int32
+          type: integer
+    ProjectPhaseCreateParams:
+      type: object
+      properties:
+        projectID:
+          format: int32
+          type: integer
+        projectPhaseTypeID:
+          format: int32
+          type: integer
+    ProjectPhaseDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        Project:
+          type: string
+        ProjectPhaseTypeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        PlannedStartDate:
+          format: date-time
+          type: string
+        ActualStartDate:
+          format: date-time
+          type: string
+        PlannedFinishDate:
+          format: date-time
+          type: string
+        ActualFinishDate:
+          format: date-time
+          type: string
+        StatusID:
+          format: int32
+          type: integer
+        PercentComplete:
+          format: int32
+          type: integer
+    UserDefinedScoreBreakdown:
+      type: object
+      properties:
+        CategoryScores:
+          type: array
+          items:
+            $ref: "#/components/schemas/CategoryScore"
+    CategoryScore:
+      type: object
+      properties:
+        Key:
+          format: int32
+          type: integer
+        Value:
+          format: double
+          type: number
+    ViewProject:
+      type: object
+      properties:
+        Name:
+          type: string
+        ProjectCode:
+          type: string
+        Description:
+          type: string
+        PlantID:
+          format: int32
+          type: integer
+        PlantCode:
+          type: string
+        ProjectTypeID:
+          format: int32
+          type: integer
+        ProjectType:
+          type: string
+        Plant:
+          type: string
+        DateCreated:
+          format: date-time
+          type: string
+        CreatedByUserID:
+          format: int32
+          type: integer
+        CreatedByUser:
+          type: string
+        DateModified:
+          format: date-time
+          type: string
+        ModifiedByUserID:
+          format: int32
+          type: integer
+        ModifiedByUser:
+          type: string
+        IsDeleted:
+          type: boolean
+        EstimatedHours:
+          format: int32
+          type: integer
+        ProjectManagerUserID:
+          format: int32
+          type: integer
+        ProjectManager:
+          type: string
+        ConstructionManagerUserID:
+          format: int32
+          type: integer
+        ConstructionManager:
+          type: string
+        CapitalPlanStatusID:
+          format: int32
+          type: integer
+        CapitalPlanStatus:
+          type: string
+        OriginalBudget:
+          format: double
+          type: number
+        CurrentBudget:
+          format: double
+          type: number
+        ForecastBudget:
+          format: double
+          type: number
+        PlannedStartDate:
+          format: date-time
+          type: string
+        PlannedFinishDate:
+          format: date-time
+          type: string
+        ActualStartDate:
+          format: date-time
+          type: string
+        ActualFinishDate:
+          format: date-time
+          type: string
+        BaselineMechanicalCompletionDate:
+          format: date-time
+          type: string
+        PlannedMechanicalCompletionDate:
+          format: date-time
+          type: string
+        ForecastMechanicalCompletionDate:
+          format: date-time
+          type: string
+        ActualMechanicalCompletionDate:
+          format: date-time
+          type: string
+        ProjectApprovalDate:
+          format: date-time
+          type: string
+        MechanicalCompletionVariance:
+          format: int32
+          type: integer
+        ProjectDuration:
+          format: int32
+          type: integer
+        FivePercentOfDuration:
+          format: double
+          type: number
+        AWPLevelID:
+          format: int32
+          type: integer
+        AWPLevel:
+          type: string
+        UserDefinedScore:
+          format: double
+          type: number
+        AWPScore:
+          format: double
+          type: number
+        BusinessUnitID:
+          format: int32
+          type: integer
+        BusinessUnit:
+          type: string
+        PortfolioID:
+          format: int32
+          type: integer
+        Portfolio:
+          type: string
+        PlantAssetID:
+          format: int32
+          type: integer
+        PlantAsset:
+          type: string
+        Archive:
+          type: boolean
+        Template:
+          type: boolean
+        ProjectEngineerID:
+          format: int32
+          type: integer
+        ProjectEngineer:
+          type: string
+        ID:
+          format: int32
+          type: integer
+    AssociationSettingDTO:
+      type: object
+      properties:
+        ProjectID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        AssociatedEntityTypeID:
+          format: int32
+          type: integer
+        AssociatedEntityTypeName:
+          type: string
+        IsChecked:
+          type: boolean
+        InitialValue:
+          type: boolean
+        InheritDeliverables:
+          type: boolean
+    ProjectGeneralSettingsDTO:
+      type: object
+      properties:
+        GeneralSettings:
+          $ref: "#/components/schemas/ProjectGeneralSettings"
+    ProjectGeneralSettings:
+      type: object
+      properties:
+        RestrictDataByContractAndProjectTeam:
+          type: boolean
+        Bim360ProjectID:
+          type: string
+        Bim360TopFolderID:
+          type: string
+    EntitySettingsDTO:
+      type: object
+      properties:
+        DataRequirementSettings:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataRequirementSetting"
+        EntityMaskSetting:
+          $ref: "#/components/schemas/EntityMaskSetting"
+        ConstraintSettings:
+          $ref: "#/components/schemas/ConstraintSettings"
+        CWPSettings:
+          $ref: "#/components/schemas/CWPSettings"
+        IWPSettings:
+          $ref: "#/components/schemas/IWPSettings"
+        ValidationSettings:
+          $ref: "#/components/schemas/ValidationSettings"
+    DataRequirementSetting:
+      type: object
+      properties:
+        DisplayName:
+          type: string
+        FieldName:
+          type: string
+        DataRequirementLevel:
+          format: int32
+          enum:
+            - 0
+            - 1
+            - 2
+            - 3
+            - 4
+          type: integer
+        ShowInSettingsUI:
+          type: boolean
+    EntityMaskSetting:
+      type: object
+      properties:
+        Mask:
+          type: string
+        RequireAutoGenerate:
+          type: boolean
+        StartingSequenceNumber:
+          format: int32
+          type: integer
+        ShowInSettingsUI:
+          type: boolean
+    ConstraintSettings:
+      type: object
+      properties:
+        CountdownSettings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ColorFormattingRule"
+        ShowInSettingsUI:
+          type: boolean
+    CWPSettings:
+      type: object
+      properties:
+        EnablePartialReleaseTracking:
+          type: boolean
+        ShowInSettingsUI:
+          type: boolean
+    IWPSettings:
+      type: object
+      properties:
+        ScheduleNightlyMaterialConstraintsAnalysis:
+          type: boolean
+        ShowInSettingsUI:
+          type: boolean
+    ValidationSettings:
+      type: object
+      properties:
+        RequireFinishDateAfterStartDate:
+          type: boolean
+        ShowInSettingsUI:
+          type: boolean
+    ColorFormattingRule:
+      type: object
+      properties:
+        Operator:
+          format: int32
+          enum:
+            - 1
+            - 2
+            - 3
+            - 4
+            - 5
+            - 6
+            - 7
+            - 8
+            - 9
+            - 10
+            - 11
+            - 12
+            - 13
+            - 14
+            - 15
+            - 16
+            - 17
+            - 18
+            - 19
+            - 20
+            - 21
+            - 22
+            - 23
+            - 24
+            - 25
+            - 26
+            - 27
+          type: integer
+        Value:
+          format: int32
+          type: integer
+        HighValue:
+          format: int32
+          type: integer
+        Color:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+    ToolTimeSettingsDTO:
+      type: object
+      properties:
+        EntityMaskSetting:
+          $ref: "#/components/schemas/EntityMaskSetting"
+        ToolTimeSettings:
+          $ref: "#/components/schemas/ToolTimeSettings"
+        DataRequirementSettings:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataRequirementSetting"
+    ToolTimeSettings:
+      type: object
+      properties:
+        FormattingRules:
+          type: array
+          items:
+            $ref: "#/components/schemas/ColorFormattingRule"
+    ActionSettingsDTO:
+      type: object
+      properties:
+        ActionSettings:
+          type: array
+          items:
+            $ref: "#/components/schemas/ActionSettings"
+        ShowPriority:
+          type: boolean
+        ShowUrgency:
+          type: boolean
+        UrgencySettings:
+          $ref: "#/components/schemas/UrgencySettings"
+    ActionSettings:
+      type: object
+      properties:
+        EntityTypeName:
+          type: string
+        EntityTypeID:
+          format: int32
+          type: integer
+        AllowAssignRole:
+          type: boolean
+        AllowAssignUserGroup:
+          type: boolean
+    UrgencySettings:
+      type: object
+      properties:
+        VeryHighUrgencyWeeks:
+          format: int32
+          type: integer
+        HighUrgencyWeeks:
+          format: int32
+          type: integer
+        MediumUrgencyWeeks:
+          format: int32
+          type: integer
+        LowUrgencyWeeks:
+          format: int32
+          type: integer
+    ProjectTeamGoalMeasurementDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        ProjectTeamGoalID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        BestPracticeMeasurementTypeID:
+          format: int32
+          type: integer
+        ScoreValue:
+          format: double
+          type: number
+        ActualValue:
+          format: double
+          type: number
+        DocumentJson:
+          type: string
+        EntityID:
+          format: int32
+          type: integer
+        EntityName:
+          type: string
+        TaskID:
+          format: int32
+          type: integer
+        TaskName:
+          type: string
+        ShowRangeSettings:
+          type: boolean
+    ProjectTeamGoalTaskDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectTeamGoalID:
+          format: int32
+          type: integer
+        TaskDescription:
+          type: string
+        TaskID:
+          format: int32
+          type: integer
+        TaskName:
+          type: string
+        TaskStatus:
+          type: string
+        StatusColor:
+          type: string
+    ProjectTeamMemberDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectTeamID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+    ProjectTeamLearningPathDTO:
+      type: object
+      properties:
+        ProjectTeamID:
+          format: int32
+          type: integer
+        ProjectTeam:
+          type: string
+        LearningPathID:
+          format: int32
+          type: integer
+        LearningPath:
+          type: string
+    ProjectUserCreateParams:
+      type: object
+      properties:
+        projectID:
+          format: int32
+          type: integer
+        userID:
+          format: int32
+          type: integer
+    AddRiskDTO:
+      type: object
+      properties:
+        ProjectID:
+          format: int32
+          type: integer
+    RiskDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        SequenceNumber:
+          format: int32
+          type: integer
+        RiskType:
+          type: string
+        Description:
+          type: string
+        StatusID:
+          format: int32
+          type: integer
+        Notes:
+          type: string
+        PriorityID:
+          format: int32
+          type: integer
+        IsUrgent:
+          type: boolean
+        CompanyID:
+          format: int32
+          type: integer
+        AssignedByUserID:
+          format: int32
+          type: integer
+        AssignedByUser:
+          type: string
+        AssignedToRoleID:
+          format: int32
+          type: integer
+        AssignedToRole:
+          type: string
+        AssignedToUserGroupID:
+          format: int32
+          type: integer
+        AssignedToUserGroup:
+          type: string
+        AssignedToUserID:
+          format: int32
+          type: integer
+        AssignedToUser:
+          type: string
+        DateDue:
+          format: date-time
+          type: string
+        DateDueDateAssigned:
+          format: date-time
+          type: string
+        ForecastDate:
+          format: date-time
+          type: string
+        RiskID:
+          type: string
+        Status:
+          type: string
+        TrendID:
+          format: int32
+          type: integer
+        Phase:
+          type: string
+        RiskTypeID:
+          format: int32
+          type: integer
+        ImpactID:
+          format: int32
+          type: integer
+        ProbabilityID:
+          format: int32
+          type: integer
+        CostImpactID:
+          format: int32
+          type: integer
+        ScheduleImpactID:
+          format: int32
+          type: integer
+        ProductionAvailabilityImpactID:
+          format: int32
+          type: integer
+        RecoveryImpactID:
+          format: int32
+          type: integer
+        NextReviewDate:
+          format: date-time
+          type: string
+        IdentifiedBy:
+          type: string
+        DateIdentified:
+          format: date-time
+          type: string
+        MitigationPlan:
+          type: string
+        MitigationStatus:
+          type: string
+        ContingencyTrigger:
+          type: string
+        ContingencyPlan:
+          type: string
+        Level1:
+          type: boolean
+        PlannedStartDate:
+          format: date-time
+          type: string
+        ActualStartDate:
+          format: date-time
+          type: string
+        PlannedFinishDate:
+          format: date-time
+          type: string
+        ActualFinishDate:
+          format: date-time
+          type: string
+        RiskFunctionalAreaID:
+          format: int32
+          type: integer
+        ProjectPhaseID:
+          format: int32
+          type: integer
+        TargetImpactID:
+          format: int32
+          type: integer
+        TargetProbabilityID:
+          format: int32
+          type: integer
+        TargetCostImpactID:
+          format: int32
+          type: integer
+        TargetScheduleImpactID:
+          format: int32
+          type: integer
+        TargetProductionAvailabilityImpactID:
+          format: int32
+          type: integer
+        TargetRecoveryImpactID:
+          format: int32
+          type: integer
+        RiskMitigationPlanID:
+          format: int32
+          type: integer
+        RiskMitigationStatusID:
+          format: int32
+          type: integer
+        SourceID:
+          format: int32
+          type: integer
+        SourceKey:
+          type: string
+        SourceImportID:
+          format: int32
+          type: integer
+        Cause:
+          type: string
+        Event:
+          type: string
+        Consequence:
+          type: string
+        DateActivated:
+          format: date-time
+          type: string
+        MeetingTypeID:
+          format: int32
+          type: integer
+        RiskCategoryIDs:
+          type: array
+          items:
+            format: int32
+            type: integer
+    PermissionCategoryDTO:
+      type: object
+      properties:
+        Category:
+          type: string
+        Permissions:
+          type: array
+          items:
+            $ref: "#/components/schemas/PermissionDTO"
+    PermissionDTO:
+      type: object
+      properties:
+        Description:
+          type: string
+        IsChecked:
+          type: boolean
+        OriginalValue:
+          type: boolean
+    SafetyObservationDTO:
+      type: object
+      properties:
+        Name:
+          type: string
+        EntityID:
+          format: int32
+          type: integer
+        EntityName:
+          type: string
+        ObservationDate:
+          format: date-time
+          type: string
+        Description:
+          type: string
+        Mitigation:
+          type: string
+        ProjectID:
+          format: int32
+          type: integer
+        AreaID:
+          format: int32
+          type: integer
+        Project:
+          type: string
+        DateCreated:
+          format: date-time
+          type: string
+        CreatedByUserID:
+          format: int32
+          type: integer
+        ObservedByUserID:
+          format: int32
+          type: integer
+        ObservedByUser:
+          type: string
+        CreatedByUser:
+          type: string
+        DateModified:
+          format: date-time
+          type: string
+        ModifiedByUserID:
+          format: int32
+          type: integer
+        ModifiedByUser:
+          type: string
+        IsDeleted:
+          type: boolean
+        Categories:
+          type: array
+          items:
+            $ref: "#/components/schemas/SafetyObservationCategoryDTO"
+        ID:
+          format: int32
+          type: integer
+        ParticipantsOwner:
+          format: int32
+          type: integer
+        ParticipantsDirectReportContractor:
+          format: int32
+          type: integer
+        ParticipantsContractor:
+          format: int32
+          type: integer
+        CompanyID:
+          format: int32
+          type: integer
+        UnitID:
+          format: int32
+          type: integer
+    SafetyObservationCategoryDTO:
+      type: object
+      properties:
+        Name:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+        Items:
+          type: array
+          items:
+            $ref: "#/components/schemas/SafetyObservationTypesDTO"
+    SafetyObservationTypesDTO:
+      type: object
+      properties:
+        IsSafe:
+          format: int32
+          type: integer
+        ID:
+          format: int32
+          type: integer
+        SafetyObservationTypeID:
+          format: int32
+          type: integer
+        SortOrder:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Intervention:
+          type: boolean
+    RollupScoreParams:
+      type: object
+      properties:
+        projectID:
+          format: int32
+          type: integer
+        segmentTypeID:
+          format: int32
+          type: integer
+        segmentID:
+          format: int32
+          type: integer
+    SearchModel:
+      type: object
+      properties:
+        search:
+          type: string
+        projectID:
+          format: int32
+          type: integer
+        entityTypeID:
+          format: int32
+          type: integer
+    SignUpOptions:
+      type: object
+      properties:
+        AllowSignUp:
+          type: boolean
+        RestrictByDomain:
+          type: boolean
+        AllowedDomains:
+          type: string
+        ExpireInactiveAccounts:
+          type: boolean
+        ExpireInactiveAccountTime:
+          format: int32
+          type: integer
+        SupportInformationText:
+          type: string
+        RequireSpecialCharacters:
+          type: boolean
+        EnforcePasswordExpiration:
+          type: boolean
+        PasswordExpirationDays:
+          format: int32
+          type: integer
+        EnableInactivityTimeout:
+          type: boolean
+        InactivityTimeout:
+          format: int32
+          type: integer
+    FileUploadSettings:
+      type: object
+      properties:
+        AllowedFileTypes:
+          type: string
+    SamlSettings:
+      type: object
+      properties:
+        Certificate:
+          type: string
+        EnableSAMLAuthentication:
+          type: boolean
+        Issuer:
+          type: string
+        RequireSAMLAuthentication:
+          type: boolean
+        SingleSignOnUrl:
+          type: string
+    UserAccountDataCompletenessOptions:
+      type: object
+      properties:
+        DataRequirements:
+          type: array
+          items:
+            $ref: "#/components/schemas/DataRequirementSetting"
+    UserDefinedScoringOptions:
+      type: object
+      properties:
+        EnableUserDefinedScoring:
+          type: boolean
+        ScoreName:
+          type: string
+        WorstValue:
+          format: double
+          type: number
+        RedYellowThreshold:
+          format: double
+          type: number
+        YellowGreenThreshold:
+          format: double
+          type: number
+        BestValue:
+          format: double
+          type: number
+        ScoringCategories:
+          type: array
+          items:
+            $ref: "#/components/schemas/UserDefinedScoringCategory"
+    UserDefinedScoringCategory:
+      type: object
+      properties:
+        Name:
+          type: string
+        Weight:
+          format: double
+          type: number
+        SortIndex:
+          format: int32
+          type: integer
+    GetTasksParams:
+      type: object
+      properties:
+        ShowComplete:
+          type: boolean
+        TaskTypeID:
+          format: int32
+          type: integer
+        HideSubTasks:
+          type: boolean
+        HideTasksWithChildren:
+          type: boolean
+    ResolutionNoteDTO:
+      type: object
+      properties:
+        TaskResolutionID:
+          format: int32
+          type: integer
+        ResolutionNotes:
+          type: string
+        CompleteIncompleteSubtasks:
+          type: boolean
+    AddSubtaskDTO:
+      type: object
+      properties:
+        Name:
+          type: string
+        ParentActionID:
+          format: int32
+          type: integer
+        SubtaskID:
+          format: int32
+          type: integer
+    AddTaskDTO:
+      type: object
+      properties:
+        ProjectID:
+          format: int32
+          type: integer
+        TaskTypeID:
+          format: int32
+          type: integer
+        RiskID:
+          format: int32
+          type: integer
+        RiskTaskTypeID:
+          format: int32
+          type: integer
+        ParentActionID:
+          format: int32
+          type: integer
+        BoardID:
+          format: int32
+          type: integer
+    TaskSortOrderDTO:
+      type: object
+      properties:
+        ProjectID:
+          format: int32
+          type: integer
+        ID:
+          format: int32
+          type: integer
+        SortOrder:
+          format: int32
+          type: integer
+    TaskCloneOptionsDTO:
+      type: object
+      properties:
+        CloneFromTaskID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: boolean
+        Assignee:
+          type: boolean
+        DueDate:
+          type: boolean
+        Priority:
+          type: boolean
+        Boards:
+          type: boolean
+        Labels:
+          type: boolean
+        Subtasks:
+          type: boolean
+        Attachments:
+          type: boolean
+    ToolDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        ToolTypeID:
+          format: int32
+          type: integer
+        Quantity:
+          format: int32
+          type: integer
+        EstimatedHours:
+          format: int32
+          type: integer
+        ActualHours:
+          format: int32
+          type: integer
+        ActualDays:
+          format: int32
+          type: integer
+        EstimatedDays:
+          format: int32
+          type: integer
+        ToolType:
+          type: string
+        IsEditable:
+          type: boolean
+    ToolTimeObservationSettingDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Code:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+    ToolTimeObservationDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        ToolTimeReadingID:
+          format: int32
+          type: integer
+        NumberOfPeople:
+          format: int32
+          type: integer
+        ToolTimeObservationTypeID:
+          format: int32
+          type: integer
+        ToolTimeObservationCategoryID:
+          format: int32
+          type: integer
+        ToolTimeObservationActivityID:
+          format: int32
+          type: integer
+        ToolTimeObservationTaskID:
+          format: int32
+          type: integer
+        DisciplineID:
+          format: int32
+          type: integer
+        Comments:
+          type: string
+        UniqueID:
+          format: uuid
+          type: string
+          example: 00000000-0000-0000-0000-000000000000
+        DateObserved:
+          format: date-time
+          type: string
+        AreaID:
+          format: int32
+          type: integer
+        UnitID:
+          format: int32
+          type: integer
+        WorkCenterID:
+          format: int32
+          type: integer
+    ToolTimeReadingDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        ObservedByUserID:
+          format: int32
+          type: integer
+        ObservedByUser:
+          type: string
+        DateObserved:
+          format: date-time
+          type: string
+        AreaID:
+          format: int32
+          type: integer
+        UnitID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        EntityName:
+          type: string
+        DisciplineID:
+          format: int32
+          type: integer
+        CompanyID:
+          format: int32
+          type: integer
+        DateCreated:
+          format: date-time
+          type: string
+        ExpectedNumberOfPeople:
+          format: int32
+          type: integer
+        ObservedNumberOfPeople:
+          format: int32
+          type: integer
+        GPSCaptured:
+          type: boolean
+        Latitude:
+          format: double
+          type: number
+        Longitude:
+          format: double
+          type: number
+        Comments:
+          type: string
+        PercentToolTime:
+          format: int32
+          type: integer
+        WorkCenterID:
+          format: int32
+          type: integer
+        ToolTimeObservations:
+          type: array
+          items:
+            $ref: "#/components/schemas/ToolTimeObservationDTO"
+    TrainingLearningPathDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        CompanyID:
+          format: int32
+          type: integer
+        LearningPathGroups:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrainingLearningPathGroupDTO"
+    TrainingLearningPathGroupDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        LearningPathID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        SortOrder:
+          format: int32
+          type: integer
+        DaysToComplete:
+          format: int32
+          type: integer
+        LearningPathCourses:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrainingLearningPathGroupCourseDTO"
+    TrainingLearningPathGroupCourseDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        LearningPathGroupID:
+          format: int32
+          type: integer
+        CourseTypeID:
+          format: int32
+          type: integer
+        SortOrder:
+          format: int32
+          type: integer
+    UsageAnalyticsEventDTO:
+      type: object
+      properties:
+        EventKey:
+          type: string
+        ProjectID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+    UserAccountDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Username:
+          type: string
+        DisplayName:
+          type: string
+        Email:
+          type: string
+        InternalID:
+          type: string
+        CompanyID:
+          format: int32
+          type: integer
+        OfficePhone:
+          type: string
+        MobilePhone:
+          type: string
+        City:
+          type: string
+        State:
+          type: string
+        CountryOfResidence:
+          type: string
+        PositionID:
+          format: int32
+          type: integer
+        DepartmentID:
+          format: int32
+          type: integer
+        DisciplineID:
+          format: int32
+          type: integer
+        PrimaryLanguage:
+          type: string
+        EnglishWrittenProficiencyID:
+          format: int32
+          type: integer
+        EnglishSpokenProficiencyID:
+          format: int32
+          type: integer
+        IsSystemAdmin:
+          type: boolean
+        IsTrainingAdmin:
+          type: boolean
+        IsActive:
+          type: boolean
+        AllowViewTrainingLog:
+          type: boolean
+        AllowAddUsersToTraining:
+          type: boolean
+        AllowCreateUsersInTraining:
+          type: boolean
+        SAMLSingleSignOn:
+          type: boolean
+        RequirePasswordReset:
+          type: boolean
+        IsLocked:
+          type: boolean
+        SupervisorUserID:
+          format: int32
+          type: integer
+        SupervisorUser:
+          type: string
+        NotificationEmail:
+          type: string
+        LastLoggedIn:
+          format: date-time
+          type: string
+        DefaultPlantID:
+          format: int32
+          type: integer
+        DefaultPlant:
+          type: string
+        IsCompanyTrainingAdmin:
+          type: boolean
+        AllowViewCompanyTrainingLog:
+          type: boolean
+        AllowCreateManualTrainingLogEntries:
+          type: boolean
+        AllowDeleteManualTrainingLogEntries:
+          type: boolean
+        AllowImportTrainingLogEntries:
+          type: boolean
+        MobilePIN:
+          type: string
+        KeepActive:
+          type: boolean
+        DateLastActivated:
+          format: date-time
+          type: string
+    UserProfileDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        Username:
+          type: string
+        DisplayName:
+          type: string
+        Email:
+          type: string
+        InternalID:
+          type: string
+        CompanyID:
+          format: int32
+          type: integer
+        OfficePhone:
+          type: string
+        MobilePhone:
+          type: string
+        City:
+          type: string
+        State:
+          type: string
+        CountryOfResidence:
+          type: string
+        PositionID:
+          format: int32
+          type: integer
+        DepartmentID:
+          format: int32
+          type: integer
+        DisciplineID:
+          format: int32
+          type: integer
+        PrimaryLanguage:
+          type: string
+        EnglishWrittenProficiencyID:
+          format: int32
+          type: integer
+        EnglishSpokenProficiencyID:
+          format: int32
+          type: integer
+        NotificationEmail:
+          type: string
+        DefaultPlantID:
+          format: int32
+          type: integer
+        MobilePIN:
+          type: string
+    UserGroupUserDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        UserGroupID:
+          format: int32
+          type: integer
+        UserID:
+          format: int32
+          type: integer
+    WorkCenterDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        WorkDaySettings:
+          $ref: "#/components/schemas/WorkDaySettings"
+    WorkDaySettings:
+      type: object
+      properties:
+        WorkDayStartTime:
+          type: string
+        WorkDayEndTime:
+          type: string
+        NonWorkingTimeBlocks:
+          type: array
+          items:
+            $ref: "#/components/schemas/TimeBlock"
+    TimeBlock:
+      type: object
+      properties:
+        Name:
+          type: string
+        Start:
+          type: string
+        End:
+          type: string
+    ConstructionComponentDTO:
+      type: object
+      properties:
+        EntityID:
+          format: int32
+          type: integer
+        ModelID:
+          format: int32
+          type: integer
+        dbID:
+          format: int32
+          type: integer
+    GetExecutionTasksParams:
+      type: object
+      properties:
+        FilterBy:
+          type: string
+        FilterValue:
+          type: string
+        ShowComplete:
+          type: boolean
+        IncludeSteps:
+          type: boolean
+    WorkPackageExecutionTaskStepDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        WorkPackageExecutionTaskID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Weight:
+          format: int32
+          type: integer
+        SortOrder:
+          format: int32
+          type: integer
+        IsCompleted:
+          type: boolean
+    WorkPackageExecutionTaskDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        EntityType:
+          type: string
+        WorkPackageExecutionTaskTypeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        Category:
+          type: string
+        TaskType:
+          type: string
+        UOM:
+          type: string
+        Status:
+          type: string
+        Drawing:
+          type: string
+        TotalUnits:
+          format: int32
+          type: integer
+        EstimatedHours:
+          format: int32
+          type: integer
+        ScaffoldID:
+          format: int32
+          type: integer
+        Multiplier:
+          format: double
+          type: number
+        WorkPackageComponentID:
+          format: int32
+          type: integer
+        WorkPackageExecutionTaskSteps:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkPackageExecutionTaskStepDTO"
+    WorkPackageExecutionTaskTypeDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        ProjectID:
+          format: int32
+          type: integer
+        EntityTypeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Description:
+          type: string
+        Category:
+          type: string
+        UnitOfMeasureID:
+          format: int32
+          type: integer
+        RateOfPlacement:
+          format: double
+          type: number
+        WorkPackageExecutionTaskSteps:
+          type: array
+          items:
+            $ref: "#/components/schemas/WorkPackageExecutionTaskTypeStepDTO"
+    WorkPackageExecutionTaskTypeStepDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        WorkPackageTaskTypeID:
+          format: int32
+          type: integer
+        Name:
+          type: string
+        Weight:
+          format: int32
+          type: integer
+        SortOrder:
+          format: int32
+          type: integer
+    WorkPackageResourceDTO:
+      type: object
+      properties:
+        ID:
+          format: int32
+          type: integer
+        EntityID:
+          format: int32
+          type: integer
+        ResourceTypeID:
+          format: int32
+          type: integer
+        Quantity:
+          format: int32
+          type: integer
+        ActualHours:
+          format: int32
+          type: integer
+        EstimatedHours:
+          format: int32
+          type: integer
+        ActualDays:
+          format: int32
+          type: integer
+        EstimatedDays:
+          format: int32
+          type: integer
+        ResourceType:
+          type: string
+        IsEditable:
+          type: boolean
+    GetReworkTaskParams:
+      type: object
+      properties:
+        ShowComplete:
+          type: boolean
+    SwaggerDataSourceResult_LoginSuccessDTO_:
+      type: object
+      properties:
+        totalCount:
+          format: int32
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LoginSuccessDTO"
+        summary:
+          type: array
+          items:
+            format: int32
+            type: integer
+        className:
+          type: string
+    SwaggerDataSourceResult_NavTreeConfiguration_:
+      type: object
+      properties:
+        totalCount:
+          format: int32
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/NavTreeConfiguration"
+        summary:
+          type: array
+          items:
+            format: int32
+            type: integer
+        className:
+          type: string
+    SwaggerDataSourceResult_ViewInstallationWorkPackage_:
+      type: object
+      properties:
+        totalCount:
+          format: int32
+          type: integer
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ViewInstallationWorkPackage"
+        summary:
+          type: array
+          items:
+            format: int32
+            type: integer
+        className:
+          type: string
