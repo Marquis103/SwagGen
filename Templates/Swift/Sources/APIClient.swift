@@ -14,8 +14,8 @@ public class APIClient {
     /// The base url prepended before every request path
     public var baseURL: String
 
-    /// The Alamofire SessionManager used for each request
-    public var sessionManager: SessionManager
+    /// The Alamofire Session used for each request
+    public var session: Session
 
     /// These headers will get added to every request
     public var defaultHeaders: [String: String]
@@ -25,9 +25,9 @@ public class APIClient {
 
     public var decodingQueue = DispatchQueue(label: "apiClient", qos: .utility, attributes: .concurrent)
 
-    public init(baseURL: String, sessionManager: SessionManager = .default, defaultHeaders: [String: String] = [:], behaviours: [RequestBehaviour] = []) {
+    public init(baseURL: String, session: Session = .default, defaultHeaders: [String: String] = [:], behaviours: [RequestBehaviour] = []) {
         self.baseURL = baseURL
-        self.sessionManager = sessionManager
+        self.session = session
         self.behaviours = behaviours
         self.defaultHeaders = defaultHeaders
         jsonDecoder.dateDecodingStrategy = .custom(dateDecoder)
@@ -89,53 +89,34 @@ public class APIClient {
         requestBehaviour.beforeSend()
 
         if request.service.isUpload {
-            sessionManager.upload(
-                multipartFormData: { multipartFormData in
-                    for (name, value) in request.formParameters {
-                        if let file = value as? UploadFile {
-                            switch file.type {
-                            case let .url(url):
-                                if let fileName = file.fileName, let mimeType = file.mimeType {
-                                    multipartFormData.append(url, withName: name, fileName: fileName, mimeType: mimeType)
-                                } else {
-                                    multipartFormData.append(url, withName: name)
-                                }
-                            case let .data(data):
-                                if let fileName = file.fileName, let mimeType = file.mimeType {
-                                    multipartFormData.append(data, withName: name, fileName: fileName, mimeType: mimeType)
-                                } else {
-                                    multipartFormData.append(data, withName: name)
-                                }
+            session.upload(multipartFormData: { multipartFormData in
+                for (name, value) in request.formParameters {
+                    if let file = value as? UploadFile {
+                        switch file.type {
+                        case let .url(url):
+                            if let fileName = file.fileName, let mimeType = file.mimeType {
+                                multipartFormData.append(url, withName: name, fileName: fileName, mimeType: mimeType)
+                            } else {
+                                multipartFormData.append(url, withName: name)
                             }
-                        } else if let url = value as? URL {
-                            multipartFormData.append(url, withName: name)
-                        } else if let data = value as? Data {
-                            multipartFormData.append(data, withName: name)
-                        } else if let string = value as? String {
-                            multipartFormData.append(Data(string.utf8), withName: name)
+                        case let .data(data):
+                            if let fileName = file.fileName, let mimeType = file.mimeType {
+                                multipartFormData.append(data, withName: name, fileName: fileName, mimeType: mimeType)
+                            } else {
+                                multipartFormData.append(data, withName: name)
+                            }
                         }
+                    } else if let url = value as? URL {
+                        multipartFormData.append(url, withName: name)
+                    } else if let data = value as? Data {
+                        multipartFormData.append(data, withName: name)
+                    } else if let string = value as? String {
+                        multipartFormData.append(Data(string.utf8), withName: name)
                     }
-                },
-                with: urlRequest,
-                encodingCompletion: { result in
-                    switch result {
-                    case .success(let uploadRequest, _, _):
-                        cancellableRequest.networkRequest = uploadRequest
-                        uploadRequest.responseData { dataResponse in
-                            self.handleResponse(request: request, requestBehaviour: requestBehaviour, dataResponse: dataResponse, completionQueue: completionQueue, complete: complete)
-                        }
-                    case .failure(let error):
-                        let apiError = APIClientError.requestEncodingError(error)
-                        requestBehaviour.onFailure(error: apiError)
-                        let response = APIResponse<T>(request: request, result: .failure(apiError))
-
-                        completionQueue.async {
-                            complete(response)
-                        }
-                    }
-            })
+                }
+            }, with: urlRequest)
         } else {
-            let networkRequest = sessionManager.request(urlRequest)
+            let networkRequest = session.request(urlRequest)
                 .responseData(queue: decodingQueue) { dataResponse in
                     self.handleResponse(request: request, requestBehaviour: requestBehaviour, dataResponse: dataResponse, completionQueue: completionQueue, complete: complete)
 
@@ -144,7 +125,7 @@ public class APIClient {
         }
     }
 
-    private func handleResponse<T>(request: APIRequest<T>, requestBehaviour: RequestBehaviourGroup, dataResponse: DataResponse<Data>, completionQueue: DispatchQueue, complete: @escaping (APIResponse<T>) -> Void) {
+    private func handleResponse<T>(request: APIRequest<T>, requestBehaviour: RequestBehaviourGroup, dataResponse: DataResponse<Data, AFError>, completionQueue: DispatchQueue, complete: @escaping (APIResponse<T>) -> Void) {
 
         let result: APIResult<T>
 
@@ -175,7 +156,7 @@ public class APIClient {
             result = .failure(apiError)
             requestBehaviour.onFailure(error: apiError)
         }
-        let response = APIResponse<T>(request: request, result: result, urlRequest: dataResponse.request, urlResponse: dataResponse.response, data: dataResponse.data, timeline: dataResponse.timeline)
+        let response = APIResponse<T>(request: request, result: result, urlRequest: dataResponse.request, urlResponse: dataResponse.response, data: dataResponse.data)
         requestBehaviour.onResponse(response: response.asAny())
 
         completionQueue.async {
